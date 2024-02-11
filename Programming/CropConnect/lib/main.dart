@@ -1,5 +1,8 @@
 
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:io' show Platform;
+import 'package:crop_connect/main_page.dart';
 import 'package:flutter/material.dart';
 import 'login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      home: MainPage(),
     );
   }
 }
