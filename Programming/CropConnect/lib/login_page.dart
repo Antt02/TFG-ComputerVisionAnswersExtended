@@ -18,11 +18,20 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  final passwordErrorMessage = SnackBar(
+    content: Text('Invalid Mail or Password'),
+    backgroundColor: Colors.redAccent,
+  );
+
   Future signIn() async{
+    try{
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
     );
+    }on Exception catch(_){
+      ScaffoldMessenger.of(context).showSnackBar(passwordErrorMessage);
+    }
   }
 
   @override
@@ -37,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: AppColors.bone,
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
+          child: SingleChildScrollView(  
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
