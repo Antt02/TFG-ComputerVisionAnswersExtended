@@ -125,8 +125,19 @@ class _LoginPageState extends State<LoginPage> {
                     child: Container(
                       padding: EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                          color: AppColors.baseGreen,
-                          borderRadius: BorderRadius.circular(12)),
+                        gradient: LinearGradient(
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          stops: [
+                            0.5,
+                            0.9,
+                          ],
+                          colors: [
+                            AppColors.darkGreen2,
+                            AppColors.baseGreen
+                          ],
+                        ),
+                      ),
                       child: Center(
                         child: Text(
                           'Sign In',
