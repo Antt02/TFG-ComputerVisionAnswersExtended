@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'myColors.dart';
+import 'my_colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -128,9 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                         gradient: LinearGradient(
                           begin: Alignment.topRight,
                           end: Alignment.bottomLeft,
-                          stops: [
-                            0.5,
-                            0.9,
+                          stops: const [
+                            0.4,
+                            0.6,
                           ],
                           colors: [
                             AppColors.darkGreen2,
@@ -161,11 +161,14 @@ class _LoginPageState extends State<LoginPage> {
                           color: AppColors.darkGreen,
                           fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      "Register Now",
-                      style: TextStyle(
-                          color: AppColors.darkGreen2,
-                          fontWeight: FontWeight.bold),
+                    GestureDetector(
+                      onTap:  signIn, //TODO: change to create a redirect to mail
+                      child: Text(
+                        "Contact Us",
+                        style: TextStyle(
+                            color: AppColors.darkGreen2,
+                            fontWeight: FontWeight.bold),
+                      ),
                     )
                   ],
                 )

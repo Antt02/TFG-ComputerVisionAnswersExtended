@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
                 FirebaseAuth.instance.signOut();
               },
               color: Colors.redAccent,
-                child: Text("Sign Out"),
+                child: const Text("Sign Out"),
               )
             ],
           )
