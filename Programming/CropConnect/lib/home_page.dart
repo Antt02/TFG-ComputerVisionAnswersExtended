@@ -15,15 +15,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
-
-  //List of actions TODO: Correct all actions
-  List actions = [
-    //ActionName, Image, Redirect
-    ["SmartPlant", "../images/800px-Circle_-_black_simple.svg.png", LoginPage()],
-    ["ChatAssistant", "../images/800px-Circle_-_black_simple.svg.png", LoginPage()],
-    ["AutoMate", "../images/800px-Circle_-_black_simple.svg.png", LoginPage()],
-  ];
-
+  double separation = 16.0;
 
   @override
   Widget build(BuildContext context) {
@@ -49,44 +41,62 @@ class _HomePageState extends State<HomePage> {
 
         ],
       ),
-      body: SafeArea(
-          child: Column(
-            children: [
-              SizedBox(height: 25),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Welcome ',
-                      style: GoogleFonts.bebasNeue(
-                          color: AppColors.darkGreen,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold)),
-                  Text('UserName ',
-                      style: GoogleFonts.bebasNeue(
-                          color: AppColors.darkGreen,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-
-              //List of actions
-
-              Expanded(
-                child: GridView.builder(
-                  itemCount: actions.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
-                  itemBuilder: (context, index){
-                      return ActionsBox(
-                        actionName: actions[index][0],
-                        iconRoute: actions[index][1],
-                        redirectScreen: actions[index][2],
-                      );
-                  },
+      body: SingleChildScrollView(
+        child: SafeArea(
+            child: Column(
+              children: [
+                SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Welcome ',
+                        style: GoogleFonts.bebasNeue(
+                            color: AppColors.darkGreen,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold)),
+                    Text(user.displayName.toString(),
+                        style: GoogleFonts.bebasNeue(
+                            color: AppColors.darkGreen,
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold)),
+                  ],
                 ),
-              ),
-            ],
+
+                //List of actions
+                 Padding(
+                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                   child: Column(
+                    children: [
+                      const ActionsBox(
+                        actionName: "What To Plant",
+                        iconRoute: "../images/what_to_plant.png",
+                        redirectScreen: LoginPage(),
+                      ),
+                      SizedBox(height: separation),
+                      const ActionsBox(
+                        actionName: "SmartPlant",
+                        iconRoute: "../images/800px-Circle_-_black_simple.svg.png",
+                        redirectScreen: LoginPage(),
+                      ),
+                      SizedBox(height: separation),
+                      const ActionsBox(
+                        actionName: "SmartPlant",
+                        iconRoute: "../images/800px-Circle_-_black_simple.svg.png",
+                        redirectScreen: LoginPage(),
+                      ),
+                      SizedBox(height: separation),
+                      const ActionsBox(
+                        actionName: "SmartPlant",
+                        iconRoute: "../images/800px-Circle_-_black_simple.svg.png",
+                        redirectScreen: LoginPage(),
+                      )
+                    ],
+                ),
+                 ),
+              ],
+            ),
           ),
-        ),
+      ),
       );
   }
 }
