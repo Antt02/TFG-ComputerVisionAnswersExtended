@@ -69,24 +69,28 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const ActionsBox(
                         actionName: "What To Plant",
+                        description: "Use AI to know what's best for you",
                         iconRoute: "../images/what_to_plant.png",
                         redirectScreen: LoginPage(),
                       ),
                       SizedBox(height: separation),
                       const ActionsBox(
                         actionName: "SmartPlant",
+                        description: "Use AI to know what's best for you",
                         iconRoute: "../images/800px-Circle_-_black_simple.svg.png",
                         redirectScreen: LoginPage(),
                       ),
                       SizedBox(height: separation),
                       const ActionsBox(
                         actionName: "SmartPlant",
+                        description: "Use AI to know what's best for you",
                         iconRoute: "../images/800px-Circle_-_black_simple.svg.png",
                         redirectScreen: LoginPage(),
                       ),
                       SizedBox(height: separation),
                       const ActionsBox(
                         actionName: "SmartPlant",
+                        description: "Use AI to know what's best for you",
                         iconRoute: "../images/800px-Circle_-_black_simple.svg.png",
                         redirectScreen: LoginPage(),
                       )
