@@ -1,118 +1,133 @@
-import 'package:crop_connect/home_page.dart';
-import 'package:crop_connect/login_page.dart';
-import 'package:crop_connect/my_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class ActionsBox extends StatelessWidget {
+import '../my_colors.dart';
+
+class ActionsBox extends StatefulWidget {
   final String actionName;
   final String iconRoute;
   final String description;
   final redirectScreen;
 
-  const ActionsBox({super.key,
+  const ActionsBox({
+    super.key,
     required this.actionName,
     required this.description,
     required this.iconRoute,
-    required this.redirectScreen
+    required this.redirectScreen,
   });
 
+  @override
+  _ActionsBoxState createState() => _ActionsBoxState();
+}
 
+class _ActionsBoxState extends State<ActionsBox> {
+  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => redirectScreen));
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-        child: Container(
-          height: 250,
-          width: 1200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomLeft,
-              stops: const [0.4, 0.6],
-              colors: [AppColors.darkGreen2, AppColors.baseGreen],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.darkGreen2.withOpacity(0.5),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: Offset(0, 3),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: MouseRegion(
+        onEnter: (_) => _handleHover(true),
+        onExit: (_) => _handleHover(false),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => widget.redirectScreen),
+            );
+          },
+          child: Container(
+            height: isHovered ? 320 : 280,
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomLeft,
+                stops: const [0.3, 0.8],
+                colors: [
+                  AppColors.darkGreen2,
+                  isHovered ? AppColors.paleGreen.withOpacity(0.3) : AppColors.baseGreen,
+                ],
               ),
-            ],
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Icono
-              Padding(
-                padding: const EdgeInsets.only(left: 40),
-                child: Container(
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.darkGreen2.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Icono
+                Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.darkGreen2.withOpacity(0.7),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(15),
                   child: Image.asset(
-                    iconRoute,
-                    height: 80,
+                    widget.iconRoute,
+                    height: 100,
                   ),
                 ),
-              ),
-              // Espaciador
-              SizedBox(width: 20),
-              // Columna para Título y Descripción
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                // Espaciador
+                const SizedBox(height: 20),
+                // Columna para Título y Descripción
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Título
                     Text(
-                      actionName,
-                      style: TextStyle(
-                        color: AppColors.bone,
-                        fontSize: 40,
+                      widget.actionName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        letterSpacing: 1.0,
-                        fontFamily: 'Roboto', // Cambia la fuente según tu preferencia
-                        shadows: [
-                          Shadow(
-                            color: AppColors.darkGreen2.withOpacity(0.7),
-                            blurRadius: 2,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
+                        letterSpacing: 1.5,
+                        fontFamily: 'Montserrat',
                       ),
                     ),
                     // Descripción
-                    Text(
-                      description,
-                      style: TextStyle(
-                        color: AppColors.bone,
-                        fontSize: 16,
-                        fontFamily: 'Roboto', // Cambia la fuente según tu preferencia
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      child: Text(
+                        widget.description,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.bone.withOpacity(0.8),
+                          fontSize: 16,
+                          fontFamily: 'Montserrat',
+                        ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              // Flecha
-              Padding(
-                padding: const EdgeInsets.only(right: 40),
-                child: Icon(Icons.arrow_forward_ios, size: 40, color: Colors.white),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
 
+  void _handleHover(bool hover) {
+    setState(() {
+      isHovered = hover;
+    });
   }
 }
