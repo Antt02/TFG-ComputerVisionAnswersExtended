@@ -7,14 +7,18 @@ class ActionsBox extends StatefulWidget {
   final String iconRoute;
   final String description;
   final redirectScreen;
+  final gradientStartColor;
+  final gradientEndColor;
 
   const ActionsBox({
-    super.key,
+    Key? key,
     required this.actionName,
     required this.description,
     required this.iconRoute,
     required this.redirectScreen,
-  });
+    required this.gradientStartColor,
+    required this.gradientEndColor,
+  }) : super(key: key);
 
   @override
   _ActionsBoxState createState() => _ActionsBoxState();
@@ -26,7 +30,7 @@ class _ActionsBoxState extends State<ActionsBox> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      padding: const EdgeInsets.symmetric(horizontal: 0),
       child: MouseRegion(
         onEnter: (_) => _handleHover(true),
         onExit: (_) => _handleHover(false),
@@ -38,7 +42,7 @@ class _ActionsBoxState extends State<ActionsBox> {
             );
           },
           child: Container(
-            height: isHovered ? 320 : 280,
+            height: isHovered ? 150 : 125,
             width: double.infinity,
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
@@ -46,10 +50,12 @@ class _ActionsBoxState extends State<ActionsBox> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomLeft,
-                stops: const [0.3, 0.8],
+                stops: [0.3, 0.8],
                 colors: [
-                  AppColors.darkGreen2,
-                  isHovered ? AppColors.paleGreen.withOpacity(0.3) : AppColors.baseGreen,
+                  widget.gradientStartColor,
+                  isHovered
+                      ? widget.gradientEndColor.withOpacity(0.2)
+                      : widget.gradientEndColor,
                 ],
               ),
               boxShadow: [
@@ -61,61 +67,55 @@ class _ActionsBoxState extends State<ActionsBox> {
                 ),
               ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Row(
               children: [
                 // Icono
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.darkGreen2.withOpacity(0.7),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(15),
-                  child: Image.asset(
-                    widget.iconRoute,
-                    height: 100,
-                  ),
+                Image.asset(
+                  widget.iconRoute,
+                  height: 100,
                 ),
-                // Espaciador
-                const SizedBox(height: 20),
-                // Columna para Título y Descripción
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Título
-                    Text(
-                      widget.actionName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.5,
-                        fontFamily: 'Montserrat',
+                // Contenedor de texto
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(23),
+                    child: Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Titulo
+                          Center(
+                            child: Text(
+                              widget.actionName,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -1,
+                                fontFamily: 'SanFrancisco',
+                              ),
+                            ),
+                          ),
+
+                          // Espaciador
+                          const SizedBox(height: 10),
+
+                          // Descripción
+                          Center(
+                            child: Text(
+                              widget.description,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.75),
+                                letterSpacing: -0.5,
+                                fontSize: 16,
+                                fontFamily: 'SanFrancisco',
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // Descripción
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      child: Text(
-                        widget.description,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColors.bone.withOpacity(0.8),
-                          fontSize: 16,
-                          fontFamily: 'Montserrat',
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),

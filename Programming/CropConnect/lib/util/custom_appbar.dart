@@ -8,15 +8,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return PreferredSize(
       preferredSize: Size.fromHeight(60.0),
       child: AppBar(
-        centerTitle: true,
-        backgroundColor: AppColors.baseGreen,
-        elevation: 5.0, // Sombra
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            bottomLeft: Radius.circular(15),
-            bottomRight: Radius.circular(15),
-          ),
-        ),
+        centerTitle: false,
+        backgroundColor: AppColors.bone,
+        elevation: 5.0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -26,16 +20,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: const Icon(
                   Icons.person,
                   size: 30,
+                  color: Colors.black, // Cambiado a negro
                 ),
                 onPressed: () {
-                  print("Redirect to userpage"); //TODO: UserPage
+                  print("Redirect to userpage"); // TODO: UserPage
                 },
               ),
             ),
             const Text(
               'CropConnect',
               style: TextStyle(
-                color: Colors.white,
+                fontFamily: "SanFrancisco",
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
@@ -46,6 +42,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: const Icon(
                   Icons.exit_to_app,
                   size: 30,
+                  color: Colors.black,
                 ),
                 onPressed: () {
                   FirebaseAuth.instance.signOut();

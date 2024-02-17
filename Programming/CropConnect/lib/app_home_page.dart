@@ -7,21 +7,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class AppHomePage extends StatefulWidget {
+  const AppHomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<AppHomePage> createState() => _AppHomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _AppHomePageState extends State<AppHomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   double separation = 16.0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bone,
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
         child: SafeArea(
@@ -49,31 +49,39 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Column(
                   children: [
-                    const ActionsBox(
+                    ActionsBox(
                       actionName: "What To Plant",
                       description: "Use AI to know what's best for you",
-                      iconRoute: "images/what_to_plant.png", // Ajusta la ruta de la imagen según tu estructura de archivos
+                      gradientStartColor: AppColors.darkGreen2,
+                      gradientEndColor: AppColors.darkGreen,
+                      iconRoute: "images/what_to_plant.png",
                       redirectScreen: LoginPage(),
                     ),
                     SizedBox(height: separation),
-                    const ActionsBox(
+                    ActionsBox(
                       actionName: "SmartPlant",
-                      description: "Use AI to know what's best for you",
-                      iconRoute: "images/800px-Circle_-_black_simple.svg.png", // Ajusta la ruta de la imagen
+                      description: "See your statistics!",
+                      gradientStartColor: Colors.black,
+                      gradientEndColor: Colors.black38,
+                      iconRoute: "images/800px-Circle_-_black_simple.svg.png",
                       redirectScreen: LoginPage(),
                     ),
                     SizedBox(height: separation),
-                    const ActionsBox(
-                      actionName: "SmartPlant",
-                      description: "Use AI to know what's best for you",
-                      iconRoute: "images/800px-Circle_-_black_simple.svg.png", // Ajusta la ruta de la imagen
+                    ActionsBox(
+                      actionName: "AutoHydro",
+                      description: "Water, yummy!",
+                      gradientStartColor: Colors.lightBlue.shade300,
+                      gradientEndColor: Colors.blue.shade700,
+                      iconRoute: "images/800px-Circle_-_black_simple.svg.png",
                       redirectScreen: LoginPage(),
                     ),
                     SizedBox(height: separation),
-                    const ActionsBox(
+                    ActionsBox(
                       actionName: "SmartPlant",
                       description: "Use AI to know what's best for you",
-                      iconRoute: "images/800px-Circle_-_black_simple.svg.png", // Ajusta la ruta de la imagen
+                      gradientStartColor: AppColors.darkGreen2,
+                      gradientEndColor: AppColors.darkGreen,
+                      iconRoute: "images/800px-Circle_-_black_simple.svg.png",
                       redirectScreen: LoginPage(),
                     ),
                   ],
