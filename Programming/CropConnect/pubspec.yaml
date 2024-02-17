@@ -95,3 +95,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: SanFrancisco
+      fonts:
+        - asset: assets/SFPRODISPLAYBOLD.OTF
+        - asset: assets/SFPRODISPLAYMEDIUM.OTF
+        - asset: assets/SFPRODISPLAYREGULAR.OTF
