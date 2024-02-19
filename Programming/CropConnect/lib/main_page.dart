@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:crop_connect/login_web.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:crop_connect/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +26,14 @@ class MainPage extends StatelessWidget{
             return const AppHomePage();
           }
         }else{
-          return const LoginPage();
+          if (kIsWeb) {
+            print("Running on web");
+            return const WebLoginPage();
+          } else {
+            //Running on App
+            print("Running on App");
+            return const AppLoginPage();
+          }
         }
       },
       ),

@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'my_colors.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class AppLoginPage extends StatefulWidget {
+  const AppLoginPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<AppLoginPage> createState() => _AppLoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _AppLoginPageState extends State<AppLoginPage> {
   // text controllers
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
