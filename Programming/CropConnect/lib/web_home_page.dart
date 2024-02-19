@@ -55,7 +55,7 @@ class _WebHomePageState extends State<WebHomePage> {
                       gradientStartColor: AppColors.darkGreen2,
                       gradientEndColor: AppColors.darkGreen,
                       iconRoute: "images/what_to_plant.png",
-                      redirectScreen: LoginPage(),
+                      redirectScreen: AppLoginPage(),
                     ),
                     SizedBox(height: separation),
                      ActionsBox(
@@ -64,7 +64,7 @@ class _WebHomePageState extends State<WebHomePage> {
                        gradientStartColor: AppColors.darkGreen2,
                        gradientEndColor: AppColors.darkGreen,
                       iconRoute: "images/800px-Circle_-_black_simple.svg.png",
-                      redirectScreen: LoginPage(),
+                      redirectScreen: AppLoginPage(),
                     ),
                     SizedBox(height: separation),
                      ActionsBox(
@@ -73,7 +73,7 @@ class _WebHomePageState extends State<WebHomePage> {
                        gradientStartColor: AppColors.darkGreen2,
                        gradientEndColor: AppColors.darkGreen,
                       iconRoute: "images/800px-Circle_-_black_simple.svg.png",
-                      redirectScreen: LoginPage(),
+                      redirectScreen: AppLoginPage(),
                     ),
                     SizedBox(height: separation),
                      ActionsBox(
@@ -82,7 +82,7 @@ class _WebHomePageState extends State<WebHomePage> {
                        gradientStartColor: AppColors.darkGreen2,
                        gradientEndColor: AppColors.darkGreen,
                       iconRoute: "images/800px-Circle_-_black_simple.svg.png",
-                      redirectScreen: LoginPage(),
+                      redirectScreen: AppLoginPage(),
                     ),
                   ],
                 ),
