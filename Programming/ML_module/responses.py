@@ -51,6 +51,7 @@ def answers_corners(rectangles):
 def correct_rectangles(rectangles):
     corrected_rect = []
     for rect in rectangles:
+        print(rect)
         rect = utlis.reshape(rect)
         pt1 = np.float32(rect)
         pt2 = np.float32(np.float32([[0,0],[400,0], [0,cropped_height],[400,cropped_height]]))
@@ -72,7 +73,6 @@ def correct_rectangles(rectangles):
 def threshold_answers(rectangles):
     answers = []
     for rectangle in rectangles:
-        print(type(rectangle))
         img_warp_gray = cv2.cvtColor(rectangle, cv2.COLOR_BGR2GRAY)
         img_thresh = cv2.threshold(img_warp_gray, 180, 255,cv2.THRESH_BINARY_INV)[1]
         cv2.imshow("Stacked", img_thresh)
@@ -98,5 +98,3 @@ if __name__ == "__main__":
     corners = correct_rectangles(corners)
     answers = threshold_answers(corners)
     #answers = get_answer(corners)
-
-

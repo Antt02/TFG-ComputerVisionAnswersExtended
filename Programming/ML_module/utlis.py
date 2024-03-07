@@ -116,23 +116,22 @@ def showAnswers(img,myIndex,grading,ans,questions=5,choices=5):
             cv2.circle(img,((correctAns * secW)+secW//2, (x * secH)+secH//2),
             20,myColor,cv2.FILLED)
 
-def get_centroid(rectangle):
+def get_top_left_corner(rectangle):
     # Convertir cada sublista a una lista de dos elementos
     rectangle = [np.squeeze(point).tolist() for point in rectangle]
-    # Calcular el centroide
-    centroid = [sum(point[0] for point in rectangle)/4, sum(point[1] for point in rectangle)/4]
-    return centroid
+    return min(rectangle, key=lambda point: (point[1], point[0]))
 
 def divide_and_sort_rectangles(rectangles):
-    centroids = [get_centroid(rect) for rect in rectangles]
+    top_left_corners = [get_top_left_corner(rect) for rect in rectangles]
 
-    mean_x = np.mean([centroid[0] for centroid in centroids])
+    mean_x = np.mean([corner[0] for corner in top_left_corners])
 
-    left_rectangles = [rect for rect, centroid in zip(rectangles, centroids) if centroid[0] < mean_x]
-    right_rectangles = [rect for rect, centroid in zip(rectangles, centroids) if centroid[0] >= mean_x]
+    left_rectangles = [rect for rect, corner in zip(rectangles, top_left_corners) if corner[0] < mean_x]
+    right_rectangles = [rect for rect, corner in zip(rectangles, top_left_corners) if corner[0] >= mean_x]
 
-    left_rectangles.sort(key=get_centroid)
-    right_rectangles.sort(key=get_centroid)
+    # Ordenar cada grupo de arriba a abajo por la coordenada y del vértice superior izquierdo
+    left_rectangles.sort(key=lambda rect: get_top_left_corner(rect)[1])
+    right_rectangles.sort(key=lambda rect: get_top_left_corner(rect)[1])
 
     sorted_rectangles = left_rectangles + right_rectangles
 
