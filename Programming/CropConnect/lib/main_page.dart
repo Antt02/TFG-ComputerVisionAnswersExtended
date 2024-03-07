@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:crop_connect/login_web.dart';
+import 'package:crop_connect/web_landing.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:crop_connect/login_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';

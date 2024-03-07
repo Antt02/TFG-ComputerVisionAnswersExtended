@@ -117,7 +117,7 @@ class _LoginPageState extends State<WebLoginPage> {
                                 controller: _emailController,
                                 decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderSide: const BorderSide(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -126,7 +126,7 @@ class _LoginPageState extends State<WebLoginPage> {
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   hintText: AutofillHints.email,
-                                  hintStyle: TextStyle(
+                                  hintStyle: const TextStyle(
                                     fontFamily: "SanFranciso",
                                   ),
                                   fillColor: Colors.grey[100],
@@ -134,7 +134,7 @@ class _LoginPageState extends State<WebLoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 12),
+                            const SizedBox(height: 12),
 
                             // Password textfield
                             Padding(
@@ -146,7 +146,7 @@ class _LoginPageState extends State<WebLoginPage> {
                                 controller: _passwordController,
                                 decoration: InputDecoration(
                                   enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
+                                    borderSide: const BorderSide(color: Colors.grey),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   focusedBorder: OutlineInputBorder(
@@ -160,7 +160,7 @@ class _LoginPageState extends State<WebLoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 12),
+                            const SizedBox(height: 12),
 
                             // SignIn button
                             Padding(
@@ -203,13 +203,13 @@ class _LoginPageState extends State<WebLoginPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
                             // Register button
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                   "Not a Member? ",
                                   style: TextStyle(
                                     color: Colors.black,
@@ -219,7 +219,7 @@ class _LoginPageState extends State<WebLoginPage> {
                                   onTap: () {
                                     // TODO: change to create a redirect to mail
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Contact Us",
                                     style: TextStyle(
                                       color: Colors.blue,

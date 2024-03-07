@@ -1,11 +1,8 @@
-import 'package:crop_connect/login_page.dart';
-import 'package:crop_connect/my_colors.dart';
-import 'package:crop_connect/util/actions_box.dart';
-import 'package:crop_connect/util/custom_appbar.dart';
+import 'package:crop_connect/util/web_appbar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class WebHomePage extends StatefulWidget {
   const WebHomePage({Key? key}) : super(key: key);
@@ -18,74 +15,100 @@ class _WebHomePageState extends State<WebHomePage> {
   final user = FirebaseAuth.instance.currentUser!;
   double separation = 16.0;
 
+
   @override
   Widget build(BuildContext context) {
+    //assert (user.displayName == true);
+
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomAppBar(),
+      appBar: WebAppBar(),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 25),
+              const SizedBox(height: 100),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Stack(
+                      children: [
+                        const Center(
+                          child: Text('Welcome Back',
+                              style: TextStyle(
+                                fontFamily: "SanFrancisco",
+                                color: Colors.black,
+                                fontSize: 80,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -5,
+                              ),
+                          ),
+                        ),
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 65.0),
+
+                            child: GradientText("${user?.displayName} !",
+                                style: const TextStyle(
+                                  fontFamily: "SanFrancisco",
+                                  fontSize: 80,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: -5,
+                                ),
+                                gradientType: GradientType.linear,
+                                colors: [Color(0xFF1AA161), Color(0xFF00351C)]
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 150),
+                  const Text("Your Services. Take a look to your crop"),
+                ],
+              ),
+
+              // List of actions
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Welcome ',
-                      style: GoogleFonts.bebasNeue(
-                          color: AppColors.darkGreen,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold)),
-                  Text("${user.displayName} !",
-                      style: GoogleFonts.bebasNeue(
-                          color: AppColors.darkGreen,
-                          fontSize: 40,
-                          fontWeight: FontWeight.bold)),
+                  Container(
+                    height: 350,
+                    width: 250,
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(28),
+                    ),
+                  ),
+                  SizedBox(width: 50),
+                  Container(
+                    height: 350,
+                    width: 250,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                  ),
+                  SizedBox(width: 50),
+                  Container(
+                    height: 350,
+                    width: 250,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                  ),
+                  SizedBox(width: 50),
+                  Container(
+                    height: 350,
+                    width: 250,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(28),
+                    ),
+                  ),
                 ],
-              ),
-              const SizedBox(height: 25),
-              // List of actions
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Column(
-                  children: [
-                     ActionsBox(
-                      actionName: "What To Plant",
-                      description: "Use AI to know what's best for you",
-                      gradientStartColor: AppColors.darkGreen2,
-                      gradientEndColor: AppColors.darkGreen,
-                      iconRoute: "images/what_to_plant.png",
-                      redirectScreen: AppLoginPage(),
-                    ),
-                    SizedBox(height: separation),
-                     ActionsBox(
-                      actionName: "SmartPlant",
-                      description: "Use AI to know what's best for you",
-                       gradientStartColor: AppColors.darkGreen2,
-                       gradientEndColor: AppColors.darkGreen,
-                      iconRoute: "images/800px-Circle_-_black_simple.svg.png",
-                      redirectScreen: AppLoginPage(),
-                    ),
-                    SizedBox(height: separation),
-                     ActionsBox(
-                      actionName: "SmartPlant",
-                      description: "Use AI to know what's best for you",
-                       gradientStartColor: AppColors.darkGreen2,
-                       gradientEndColor: AppColors.darkGreen,
-                      iconRoute: "images/800px-Circle_-_black_simple.svg.png",
-                      redirectScreen: AppLoginPage(),
-                    ),
-                    SizedBox(height: separation),
-                     ActionsBox(
-                      actionName: "SmartPlant",
-                      description: "Use AI to know what's best for you",
-                       gradientStartColor: AppColors.darkGreen2,
-                       gradientEndColor: AppColors.darkGreen,
-                      iconRoute: "images/800px-Circle_-_black_simple.svg.png",
-                      redirectScreen: AppLoginPage(),
-                    ),
-                  ],
-                ),
               ),
             ],
           ),
