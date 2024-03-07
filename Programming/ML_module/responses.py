@@ -6,7 +6,7 @@ import numpy as np
 width = 800
 height = 1200
 cropped_height = height//3
-possible_answers = [0, 0, 2, 10, 3, 0, 0, 6, 6, 3, 3, 5]
+possible_answers = [1, 1, 2, 10, 3, 1, 1, 6, 6, 3, 3, 5]
 
 global img_contours
 global img_contours2
@@ -37,32 +37,27 @@ def get_contours(answers):
     cv2.drawContours(img_contours, contours, -1, (0,255,0), 3)
 
     rectangles = utlis.rectContour(contours)
+    return rectangles
 
+def answers_corners(rectangles):
     rectangles_arr = []
     for rect in rectangles:
         rectangles_arr.append(utlis.getCornerPoints(rect))
         print("----------")
         print(utlis.getCornerPoints(rect))
-    
 
     rectangles_arr = order_responses(rectangles_arr)
-    
+    return rectangles_arr
 
+def correct_rectangles(rectangles):
     corrected_rect = []
-    for rect in rectangles_arr:
+    for rect in rectangles:
         rect = utlis.reshape(rect)
         pt1 = np.float32(rect)
         pt2 = np.float32(np.float32([[0,0],[400,0], [0,cropped_height],[400,cropped_height]]))
         matrix = cv2.getPerspectiveTransform(pt1, pt2)
 
         corrected_rect.append(cv2.warpPerspective(original, matrix, (400, cropped_height)))
-
-    for rect in corrected_rect:
-        print("Showing Corrected Rect")
-        cv2.imshow('rect', rect)
-        cv2.waitKey(0)
-        
-
 
     for rect in rectangles:
         cv2.drawContours(img_contours2, [rect], -1, (0,255,0+len(rect)), 4)
@@ -75,15 +70,28 @@ def get_contours(answers):
 
     cv2.imshow("Stacked", img_stacked)
     cv2.waitKey(0)
+    return corrected_rect
+
+def threshold_answers(rectangles):
+    answers = []
+    for rectangle in rectangles:
+        print(type(rectangle))
+        img_warp_gray = cv2.cvtColor(rectangle, cv2.COLOR_BGR2GRAY)
+        img_thresh = cv2.threshold(img_warp_gray, 120, 255,cv2.THRESH_BINARY_INV)[1]
+        cv2.imshow("Stacked", img_thresh)
+        cv2.waitKey(0)
+
 
 
 def order_responses(rectangles):
     sorted_answers = sorted(rectangles, key=utlis.get_top_left_corner)
     return sorted_answers
-        
-#--- Response detection
-def get_response(answer):
-    pass
+
+def get_answer(rectangles):
+    for i, rect in enumerate(rectangles):
+        cv2.imshow('rect', rect)
+        cv2.waitKey(0)
+        utlis.splitBoxes(rectangles,possible_answers[i])
 
 if __name__ == "__main__":
     image_path = "./Images/numbered.jpg"
@@ -93,4 +101,10 @@ if __name__ == "__main__":
     img_contours2 = answers.copy()
     clear_answers = process_image(answers)
     
-    get_contours(clear_answers)
+    contours = get_contours(clear_answers)
+    corners = answers_corners(contours)
+    corners = correct_rectangles(corners)
+    answers = threshold_answers(corners)
+    #answers = get_answer(corners)
+
+
