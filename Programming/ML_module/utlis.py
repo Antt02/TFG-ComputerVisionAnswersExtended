@@ -38,7 +38,7 @@ def stackImages(imgArray,scale,lables=[]):
                 cv2.putText(ver,lables[d][c],(eachImgWidth*c+10,eachImgHeight*d+20),cv2.FONT_HERSHEY_COMPLEX,0.7,(255,0,255),2)
     return ver
 
-def reorder(myPoints):
+def reshape(myPoints):
 
     myPoints = myPoints.reshape((4, 2)) # REMOVE EXTRA BRACKET
     #print(myPoints)
@@ -73,13 +73,11 @@ def getCornerPoints(cont):
     approx = cv2.approxPolyDP(cont, 0.02 * peri, True) # APPROXIMATE THE POLY TO GET CORNER POINTS
     return approx
 
-def splitBoxes(img):
-    rows = np.vsplit(img,5)
+def splitBoxes(img, splits):
+    rows = np.vsplit(img,splits)
     boxes=[]
-    for r in rows:
-        cols= np.hsplit(r,5)
-        for box in cols:
-            boxes.append(box)
+    for row in rows:
+            boxes.append(row)
     return boxes
 
 def drawGrid(img,questions=5,choices=5):
@@ -117,3 +115,8 @@ def showAnswers(img,myIndex,grading,ans,questions=5,choices=5):
             correctAns = ans[x]
             cv2.circle(img,((correctAns * secW)+secW//2, (x * secH)+secH//2),
             20,myColor,cv2.FILLED)
+
+def get_top_left_corner(rectangle):
+    #Modify sublists into 2 element list
+    rectangle = [np.squeeze(point).tolist() for point in rectangle]
+    return min(rectangle, key=lambda point: (point[1], -point[0]))
