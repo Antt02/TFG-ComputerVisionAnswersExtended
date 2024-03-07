@@ -78,8 +78,8 @@ def get_contours(answers):
 
 
 def order_responses(rectangles):
-    rectangulos_ordenados = sorted(rectangles, key=utlis.get_top_left_corner)
-    return rectangulos_ordenados
+    sorted_answers = sorted(rectangles, key=utlis.get_top_left_corner)
+    return sorted_answers
         
 #--- Response detection
 def get_response(answer):
