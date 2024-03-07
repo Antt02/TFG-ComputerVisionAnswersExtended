@@ -43,10 +43,9 @@ def answers_corners(rectangles):
     rectangles_arr = []
     for rect in rectangles:
         rectangles_arr.append(utlis.getCornerPoints(rect))
-        print("----------")
-        print(utlis.getCornerPoints(rect))
 
-    rectangles_arr = order_responses(rectangles_arr)
+    rectangles_arr = utlis.divide_and_sort_rectangles(rectangles_arr)
+
     return rectangles_arr
 
 def correct_rectangles(rectangles):
@@ -61,8 +60,6 @@ def correct_rectangles(rectangles):
 
     for rect in rectangles:
         cv2.drawContours(img_contours2, [rect], -1, (0,255,0+len(rect)), 4)
-        #print("##################")
-        #print(rect)
 
     image_array = ([original, img_gray, img_blur, img_canny],
                 [img_contours, img_contours2, np.zeros_like(answers), np.zeros_like(answers)])
@@ -77,15 +74,10 @@ def threshold_answers(rectangles):
     for rectangle in rectangles:
         print(type(rectangle))
         img_warp_gray = cv2.cvtColor(rectangle, cv2.COLOR_BGR2GRAY)
-        img_thresh = cv2.threshold(img_warp_gray, 120, 255,cv2.THRESH_BINARY_INV)[1]
+        img_thresh = cv2.threshold(img_warp_gray, 180, 255,cv2.THRESH_BINARY_INV)[1]
         cv2.imshow("Stacked", img_thresh)
         cv2.waitKey(0)
 
-
-
-def order_responses(rectangles):
-    sorted_answers = sorted(rectangles, key=utlis.get_top_left_corner)
-    return sorted_answers
 
 def get_answer(rectangles):
     for i, rect in enumerate(rectangles):
@@ -94,7 +86,7 @@ def get_answer(rectangles):
         utlis.splitBoxes(rectangles,possible_answers[i])
 
 if __name__ == "__main__":
-    image_path = "./Images/numbered.jpg"
+    image_path = "./Images/example.jpg"
 
     answers = load_image(image_path)
     img_contours = answers.copy()

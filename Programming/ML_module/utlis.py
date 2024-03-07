@@ -116,7 +116,24 @@ def showAnswers(img,myIndex,grading,ans,questions=5,choices=5):
             cv2.circle(img,((correctAns * secW)+secW//2, (x * secH)+secH//2),
             20,myColor,cv2.FILLED)
 
-def get_top_left_corner(rectangle):
-    #Modify sublists into 2 element list
+def get_centroid(rectangle):
+    # Convertir cada sublista a una lista de dos elementos
     rectangle = [np.squeeze(point).tolist() for point in rectangle]
-    return min(rectangle, key=lambda point: (point[1], -point[0]))
+    # Calcular el centroide
+    centroid = [sum(point[0] for point in rectangle)/4, sum(point[1] for point in rectangle)/4]
+    return centroid
+
+def divide_and_sort_rectangles(rectangles):
+    centroids = [get_centroid(rect) for rect in rectangles]
+
+    mean_x = np.mean([centroid[0] for centroid in centroids])
+
+    left_rectangles = [rect for rect, centroid in zip(rectangles, centroids) if centroid[0] < mean_x]
+    right_rectangles = [rect for rect, centroid in zip(rectangles, centroids) if centroid[0] >= mean_x]
+
+    left_rectangles.sort(key=get_centroid)
+    right_rectangles.sort(key=get_centroid)
+
+    sorted_rectangles = left_rectangles + right_rectangles
+
+    return sorted_rectangles
