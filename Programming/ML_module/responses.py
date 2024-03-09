@@ -6,7 +6,7 @@ import numpy as np
 width = 800
 height = 1200
 cropped_height = height//3
-possible_answers = [1, 1, 2, 10, 3, 1, 1, 6, 6, 3, 3, 5]
+possible_answers = [0, 1, 3, 10, 3, 1, 1, 6, 6, 3, 3, 5] #Position 0 not used
 
 global img_contours
 global img_contours2
@@ -77,13 +77,31 @@ def threshold_answers(rectangles):
         img_thresh = cv2.threshold(img_warp_gray, 180, 255,cv2.THRESH_BINARY_INV)[1]
         cv2.imshow("Stacked", img_thresh)
         cv2.waitKey(0)
+        answers.append(img_thresh)
+    return answers
 
 
 def get_answer(rectangles):
     for i, rect in enumerate(rectangles):
-        cv2.imshow('rect', rect)
+        _, thresh = cv2.threshold(rect, 120, 255, cv2.THRESH_BINARY_INV)
+        contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        color_rect = cv2.cvtColor(rect, cv2.COLOR_GRAY2BGR)
+        
+        #Show colors for inner and outer contours
+        for j, (contour, h) in enumerate(zip(contours, hierarchy[0])):
+            color = (0, 255, 0) if h[3] == -1 else (0, 0, 255)  #Green => Exterior, Red => Interior
+            cv2.drawContours(color_rect, [contour], -1, color, 3)
+
+        cv2.imshow('Rect'+str(i), color_rect)
         cv2.waitKey(0)
-        utlis.splitBoxes(rectangles,possible_answers[i])
+
+    """
+    Crear funcion que cuente el numero de "pixeles" negros, que haga una división de la imagen según 
+    el numero de respuestas posibles en la pregunta
+    Crear un "centro de masas" de los pixeles detectados. Usar la altura de la imagen y el centro para 
+    determinar en que "cuadrado" hay más para poder determinar la respuesta
+    """
 
 if __name__ == "__main__":
     image_path = "./Images/example.jpg"
@@ -97,4 +115,4 @@ if __name__ == "__main__":
     corners = answers_corners(contours)
     corners = correct_rectangles(corners)
     answers = threshold_answers(corners)
-    #answers = get_answer(corners)
+    answers = get_answer(answers)
