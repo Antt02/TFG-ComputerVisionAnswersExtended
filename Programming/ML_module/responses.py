@@ -6,7 +6,8 @@ import numpy as np
 width = 800
 height = 1200
 cropped_height = height//3
-possible_answers = [0, 1, 3, 10, 3, 1, 1, 6, 6, 3, 3, 5] #Position 0 not used
+possible_answers = [2, 10, 3, 1, 1, 6, 6, 3, 3, 5]
+#possible_answers = [0, 1, 2, 10, 3, 1, 1, 6, 6, 3, 3, 5] #Position 0 not used. Question 8 2 possible answers
 
 global img_contours
 global img_contours2
@@ -75,8 +76,8 @@ def threshold_answers(rectangles):
     for rectangle in rectangles:
         img_warp_gray = cv2.cvtColor(rectangle, cv2.COLOR_BGR2GRAY)
         img_thresh = cv2.threshold(img_warp_gray, 180, 255,cv2.THRESH_BINARY_INV)[1]
-        cv2.imshow("Stacked", img_thresh)
-        cv2.waitKey(0)
+        #cv2.imshow("Stacked", img_thresh)
+        #cv2.waitKey(0)
         answers.append(img_thresh)
     return answers
 
@@ -95,6 +96,20 @@ def get_answer(rectangles):
 
         cv2.imshow('Rect'+str(i), color_rect)
         cv2.waitKey(0)
+
+def count_pixels(answer, options):
+    cv2.imshow("Answer", answer)
+    cv2.waitKey(0)
+    parts = utlis.separe_answers(answer, options)
+    
+    answer_pixels = []
+    for part in parts:
+        white_pixels = utlis.max_pixels(part)
+        answer_pixels.append(white_pixels)
+
+    print ("ANSWER: " + str(answer_pixels.index(max(answer_pixels)) + 1))
+
+    return answer_pixels.index(max(answer_pixels)) + 1
 
     """
     Crear funcion que cuente el numero de "pixeles" negros, que haga una división de la imagen según 
@@ -115,4 +130,6 @@ if __name__ == "__main__":
     corners = answers_corners(contours)
     corners = correct_rectangles(corners)
     answers = threshold_answers(corners)
-    answers = get_answer(answers)
+    for i, answer in enumerate(answers):
+        print("Seeing Question:" + str(i+2))
+        answers = count_pixels(answer, possible_answers[i])

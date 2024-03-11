@@ -74,6 +74,9 @@ def getCornerPoints(cont):
     return approx
 
 def splitBoxes(img, splits):
+    img=np.array(img)
+    print(" 0 " + str(img.shape[0]))
+    print(" 1 " + str(img.shape[1]))
     rows = np.vsplit(img,splits)
     boxes=[]
     for row in rows:
@@ -136,3 +139,27 @@ def divide_and_sort_rectangles(rectangles):
     sorted_rectangles = left_rectangles + right_rectangles
 
     return sorted_rectangles
+
+def separe_answers(answers, parts):
+    answers= np.asarray(answers)
+
+    height, width = answers.shape
+    part_height = height // parts
+
+    parts_arr = []
+    for i in range(parts):
+        start = i * part_height
+        end = (i + 1) * part_height
+        partition = answers[start:end, :]
+
+        cv2.imshow("Partition", partition)
+        cv2.waitKey(0)
+
+        parts_arr.append(partition)
+
+    return parts_arr
+
+def max_pixels(part):
+    _, imagen_binaria = cv2.threshold(part, 200, 255, cv2.THRESH_BINARY)
+    num_pixeles_blancos = cv2.countNonZero(imagen_binaria)
+    return num_pixeles_blancos
