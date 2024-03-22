@@ -111,15 +111,9 @@ def count_pixels(answer, options):
 
     return answer_pixels.index(max(answer_pixels)) + 1
 
-    """
-    Crear funcion que cuente el numero de "pixeles" negros, que haga una división de la imagen según 
-    el numero de respuestas posibles en la pregunta
-    Crear un "centro de masas" de los pixeles detectados. Usar la altura de la imagen y el centro para 
-    determinar en que "cuadrado" hay más para poder determinar la respuesta
-    """
 
 if __name__ == "__main__":
-    image_path = "./Images/example.jpg"
+    image_path = "./Images/numbered.jpg"
 
     answers = load_image(image_path)
     img_contours = answers.copy()
