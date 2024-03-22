@@ -61,6 +61,7 @@ const handleLogin = () => {
   console.log('Username:', username.value);
   console.log('Password:', password.value);
   // Aquí podrías hacer alguna lógica para iniciar sesión
+  router.push('/dashboard');
 };
 </script>
 
