@@ -19,16 +19,16 @@
               <div class="login-container">
                 <div class="login-title">Login</div>
                 <div class="p-float-label">
-                  <InputText id="username" v-model="username" />
+                  <InputText id="username" v-model="username" type="username"/>
                   <label for="username">Username</label>
                 </div>
                 <div class="p-float-label">
-                  <InputText id="password" v-model="password" />
+                  <InputText id="password" v-model="password" type="password"/>
                   <label for="password">Password</label>
                 </div>
                 <div class="flex align-items-center gap-3">
                   <Button label="Cancel" @click="closeCallback" text class="cancel-button" />
-                  <Button label="Sign-In" @click="closeCallback" text class="signin-button" />
+                  <Button label="Sign-In" @click="handleLogin" text class="signin-button" />
                 </div>
               </div>
             </template>
@@ -54,6 +54,14 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const visible = ref(false);
+const username = ref('');
+const password = ref('');
+
+const handleLogin = () => {
+  console.log('Username:', username.value);
+  console.log('Password:', password.value);
+  // Aquí podrías hacer alguna lógica para iniciar sesión
+};
 </script>
 
 <style scoped>
