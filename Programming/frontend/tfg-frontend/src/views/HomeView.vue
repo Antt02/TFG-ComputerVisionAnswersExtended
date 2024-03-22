@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <Toolbar style="border-radius: 3rem; padding: 1rem 1rem 1rem 1.5rem">
+    <Toolbar style="border-radius: 3rem; padding: 1rem 1rem 1rem 1.5rem; z-index: 1;">
       <template #start>
         <div class="flex align-items-center gap-2">
           <svg viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 2rem; margin-right: 1rem">
@@ -39,7 +39,10 @@
   </div>
   <div class="landing-page">
     <div class="content">
-      <h1>Benvingut a Auto Resposta!</h1>
+      <h1>
+        <span class="line1">Benvingut a</span><br>
+        <span class="line2">Auto Resposta!</span>
+      </h1>
       <h2>L'eina de processament de respostes automàtica</h2>
       <div class="image-container">
         <img class="landing-image" src="../components/pc_phone.png" alt="Mockup" />
@@ -74,11 +77,12 @@ const handleLogin = () => {
 .landing-page {
   font-family: 'San Francisco', Arial, sans-serif;
   background-color: #ffffff;
-  height: 100vh;
+  height: 130vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  vertical-align: center;
   overflow: hidden;
+  position: relative; /* Añadimos posición relativa para contener el texto */
 }
 
 .content {
@@ -86,22 +90,38 @@ const handleLogin = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative; /* Añadimos posición relativa para contener el texto */
+  z-index: 2; /* Asegura que el texto esté sobre la barra de navegación */
 }
 
-h1, h2 {
-  color: #333;
+
+h1 {
+  margin-top: 40px;
+  font-size: 75px;
+  line-height: 60px;
+  background: linear-gradient(to bottom, #4CAF50, #388E3C); /* Degradado de verde a verde oscuro */
+  -webkit-background-clip: text; /* Clip para que el degradado solo afecte al texto */
+  -webkit-text-fill-color: transparent; /* Relleno transparente para que el texto sea visible */
 }
+
+h2 {
+  color: #333;
+  margin-top: -20px; /* Espacio entre el h1 y el h2 */
+}
+
 
 .image-container {
   width: auto;
-  max-height: 100%;
+  max-height: auto;
   overflow: hidden;
 }
 
 .landing-image {
-  width: 60%;
-  height: auto;
-  overflow: hidden;
+  margin-top: 20px;
+  width: 75%; /* Ancho del 80% del contenedor */
+  height: auto; /* Altura automática para mantener la proporción */
+  max-width: 7800px; /* Ancho máximo de 800px */
+  max-height: 7800px; /* Altura máxima de 600px */
 }
 
 .login-container {
