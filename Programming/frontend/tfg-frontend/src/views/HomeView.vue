@@ -99,7 +99,7 @@ h1 {
   margin-top: 40px;
   font-size: 75px;
   line-height: 60px;
-  background: linear-gradient(to bottom, #4CAF50, #388E3C); /* Degradado de verde a verde oscuro */
+  background: linear-gradient(to bottom, var(--primary-500), var(--primary-800)); /* Degradado de verde a verde oscuro */
   -webkit-background-clip: text; /* Clip para que el degradado solo afecte al texto */
   -webkit-text-fill-color: transparent; /* Relleno transparente para que el texto sea visible */
 }
