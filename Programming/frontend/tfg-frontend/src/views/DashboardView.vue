@@ -1,9 +1,9 @@
 <template>
-    <div class="card">
-      <Toolbar style="border-radius: 1rem; padding: 0.5rem 1rem; z-index: 1;">
+  <div class="full-page">
+    <Toolbar class="toolbar">
       <template #start>
-        <div class="flex align-items-center gap-2">
-          <svg viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 2rem; margin-right: 1rem">
+        <div class="toolbar-start">
+          <svg viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="toolbar-icon">
             <!-- Icono -->
           </svg>
           <Button label="Sobre Nosaltres" text plain />
@@ -12,84 +12,84 @@
         </div>
       </template>
       <template #end>
-        <div class="card flex justify-content-center">
+        <div class="toolbar-end">
           <Button label="Logout" icon="pi pi-sign-out" @click="handleLogout"/>
         </div>
       </template>
     </Toolbar>
-  </div>
-  <div class="form-container">
-    <!-- Número de expediente, número de acción formativa y número de grupo -->
-    <div class="form-row">
-      <div class="form-group">
-        <div class="p-float-label">
-          <InputText id="expedient_number" v-model="integer" type="integer" />
-          <label for="expedient_number">Número d'expedient</label>
+    <div class="form-container">
+      <!-- Número de expediente, número de acción formativa y número de grupo -->
+      <div class="form-row">
+        <div class="form-group">
+          <div class="p-float-label">
+            <InputText id="expedient_number" v-model="integer" type="integer" />
+            <label for="expedient_number">Número d'expedient</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="p-float-label">
+            <AutoComplete id="accio_formativa" v-model="value" :suggestions="accions_formatives" @complete="accions_formatives_search" />
+            <label for="accio_formativa">Número de l'Acció Formativa</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="p-float-label">
+            <InputText id="group_number" v-model="integer" type="integer" />
+            <label for="group_number">Número de Grup</label>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <div class="p-float-label">
-          <AutoComplete id="accio_formativa" v-model="value" :suggestions="accions_formatives" @complete="accions_formatives_search" />
-          <label for="accio_formativa">Número de l'Acció Formativa</label>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="p-float-label">
-          <InputText id="group_number" v-model="integer" type="integer" />
-          <label for="group_number">Número de Grup</label>
-        </div>
-      </div>
-    </div>
 
-    <!-- Denominación y modalidad -->
-    <div class="form-row">
-      <div class="form-group">
-        <div class="p-float-label">
-          <InputText v-model="denomination" mode = 'disabled'/>
-          <label for="denomination">Denominación</label>
+      <!-- Denominación y modalidad -->
+      <div class="form-row">
+        <div class="form-group">
+          <div class="p-float-label">
+            <InputText v-model="denomination" mode='disabled'/>
+            <label for="denomination">Denominación</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <Dropdown v-model="selectedModality" :options="modality" optionLabel="mode" placeholder="Selecciona Una Modalitat" class="w-full md:w-14rem" />
         </div>
       </div>
-      <div class="form-group">
-        <Dropdown v-model="selectedModality" :options="modality" optionLabel="mode" placeholder="Selecciona Una Modalitat" class="w-full md:w-14rem" />
-      </div>
-    </div>
 
-    <!-- Calendario de inicio y fin -->
-    <div class="form-row">
-      <div class="form-group">
-        <div class="p-float-label">
-          <Calendar v-model="start_date" dateFormat="dd/mm/yy" />
-          <label for="start_date">Data d'Inici</label>
+      <!-- Calendario de inicio y fin -->
+      <div class="form-row">
+        <div class="form-group">
+          <div class="p-float-label">
+            <Calendar v-model="start_date" dateFormat="dd/mm/yy" />
+            <label for="start_date">Data d'Inici</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="p-float-label">
+            <Calendar v-model="end_date" dateFormat="dd/mm/yy" />
+            <label for="end_date">Data Finalització</label>
+          </div>
         </div>
       </div>
-      <div class="form-group">
-        <div class="p-float-label">
-          <Calendar v-model="end_date" dateFormat="dd/mm/yy" />
-          <label for="end_date">Data Finalització</label>
-        </div>
-      </div>
-    </div>
 
-    <!-- Uploads de la primera y última página -->
-    <div class="form-row">
-      <div class="form-group">
-        <div class="card">
-          <Toast />
-          <FileUpload name="demo[]" url="/api/upload" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
-            <template #empty>
-              <p>Primera Pàgina</p>
-            </template>
-          </FileUpload>
+      <!-- Uploads de la primera y última página -->
+      <div class="form-row">
+        <div class="form-group">
+          <div class="card upload-card">
+            <Toast />
+            <FileUpload name="demo[]" url="/api/upload" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
+              <template #empty>
+                <p>Primera Pàgina</p>
+              </template>
+            </FileUpload>
+          </div>
         </div>
-      </div>
-      <div class="form-group">
-        <div class="card">
-          <Toast />
-          <FileUpload name="demo[]" url="/api/upload" @upload="secondPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
-            <template #empty>
-              <p>Segona Pàgina</p>
-            </template>
-          </FileUpload>
+        <div class="form-group">
+          <div class="card upload-card">
+            <Toast />
+            <FileUpload name="demo[]" url="/api/upload" @upload="secondPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
+              <template #empty>
+                <p>Segona Pàgina</p>
+              </template>
+            </FileUpload>
+          </div>
         </div>
       </div>
     </div>
@@ -134,50 +134,60 @@ const handleLogout = () => {
 </script>
 
 <style scoped>
+.full-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 20px;
+}
+
+.toolbar {
+  flex: 0;
+}
+
 .form-container {
-  max-width: 1800px;
-  margin: 20px auto 0; /* Ajuste para bajar el formulario */
-  padding: 20px; /* Añadido espacio alrededor del formulario */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+  margin-top: 35px;
 }
 
 .form-group {
   flex: 1;
-  margin-right: 10px;
+  max-width: 400px; /* Aumenta el ancho del formulario */
 }
 
 .p-float-label {
   width: 100%;
 }
 
-.card {
-  background-color: #f5f5f5;
-  padding: 20px;
-  border-radius: 10px;
-}
-
-.content {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-}
-
-/* Estilos para los uploads */
 .card.upload-card {
-  width: calc(50% - 10px);
-  margin-right: 10px;
+  width: 600px; /* Aumenta el ancho de los uploads */
+  height: 500px; /* Aumenta la altura de los uploads */
+  margin-bottom: 10px;
 }
 
-.upload-card .p-fileupload-advanced .p-fileupload-files-list {
-  max-height: 150px;
-  overflow-y: auto;
+.toolbar-start {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar-icon {
+  width: 2rem;
+}
+
+.toolbar-end {
+  margin-left: auto;
 }
 </style>

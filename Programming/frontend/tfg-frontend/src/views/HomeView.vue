@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <Toolbar style="border-radius: 3rem; padding: 1rem 1rem 1rem 1.5rem; z-index: 1;">
+    <Toolbar style="padding: 1rem 1rem 1rem 1.5rem; z-index: 1;">
       <template #start>
         <div class="flex align-items-center gap-2">
           <svg viewBox="0 0 35 40" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 2rem; margin-right: 1rem">

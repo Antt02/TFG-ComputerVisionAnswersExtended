@@ -9,7 +9,6 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 
 import Button from "primevue/button"
-import Checkbox from 'primevue/checkbox';
 import Toast from 'primevue/toast';
 import InputText from 'primevue/inputtext';
 import Toolbar from 'primevue/toolbar';
@@ -27,7 +26,6 @@ app.use(ToastService);
 app.component('Dropdown', Dropdown);
 app.component('Button', Button);
 app.component('AutoComplete', AutoComplete);
-app.component('Checkbox', Checkbox);
 app.component('Toast', Toast)
 app.component('InputText', InputText)
 app.component('Toolbar', Toolbar);
