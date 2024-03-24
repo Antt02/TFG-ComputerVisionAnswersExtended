@@ -11,7 +11,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./db-volume:/var/lib/mysql
-  
-  front:
-    image: node
+      - ./database:/var/lib/mysql
+
+  init-db:
+    build:
+      context: ./init-db
+    depends_on:
+      - mysql
