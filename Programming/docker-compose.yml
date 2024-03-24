@@ -18,3 +18,10 @@ services:
       context: ./init-db
     depends_on:
       - mysql
+  
+  frontend:
+    build:
+      context: ./frontend/tfg-frontend  # Ruta al directorio del frontend
+    ports:
+      - "5173:5173" 
+      - "8080:8080"
