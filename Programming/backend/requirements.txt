@@ -2,3 +2,4 @@ bcrypt
 fastapi
 mysql-connector-python
 uvicorn
+pydantic

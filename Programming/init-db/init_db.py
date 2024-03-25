@@ -27,7 +27,7 @@ def create_tables_if_not_exist():
 
         # Si no existen, crearlas
         if not table_users_exists:
-            cursor.execute("CREATE TABLE USERS (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), email VARCHAR(255), password VARCHAR(255))")  # Especifica las columnas aquí
+            cursor.execute("CREATE TABLE USERS (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), email VARCHAR(255), password VARCHAR(255))")  # Especifica las columnas aquí
         if not table_answers_exists:
             cursor.execute("CREATE TABLE ANSWERS (id INT AUTO_INCREMENT PRIMARY KEY)")  # Especifica las columnas aquí
         if not table_questions_exists:
