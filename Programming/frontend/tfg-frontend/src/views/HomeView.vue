@@ -77,7 +77,7 @@ const handleLogin = () => {
 .landing-page {
   font-family: 'San Francisco', Arial, sans-serif;
   background-color: #ffffff;
-  height: 130vh;
+  height: 90.1vh;
   display: flex;
   justify-content: center;
   vertical-align: center;
@@ -111,6 +111,7 @@ h2 {
 
 
 .image-container {
+  vertical-align: top;
   width: auto;
   max-height: auto;
   overflow: hidden;
@@ -118,10 +119,9 @@ h2 {
 
 .landing-image {
   margin-top: 20px;
-  width: 75%; /* Ancho del 80% del contenedor */
+  width: 60%; /* Ancho del 80% del contenedor */
   height: auto; /* Altura automática para mantener la proporción */
-  max-width: 7800px; /* Ancho máximo de 800px */
-  max-height: 7800px; /* Altura máxima de 600px */
+  vertical-align: top;
 }
 
 .login-container {
