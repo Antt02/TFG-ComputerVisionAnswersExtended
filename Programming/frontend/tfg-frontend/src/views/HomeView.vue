@@ -54,17 +54,33 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useToast } from "primevue/usetoast";
+import axios from 'axios'
 
 const router = useRouter();
 const visible = ref(false);
 const username = ref('');
 const password = ref('');
+const toast = useToast();
 
 const handleLogin = () => {
-  console.log('Username:', username.value);
-  console.log('Password:', password.value);
+  axios.post('backend:8081/login', {
+    username: username.value,
+    password: password.value
+  })
+  .then(response => {
+    console.log(response.data); // Puedes mostrar la respuesta o realizar otras acciones necesarias
+    // Por ejemplo, redireccionar a otra página después de un inicio de sesión exitoso
+    router.push('/dashboard');
+  })
+  .catch(error => {
+    console.error('Error logging in:', error);
+    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Failed to log in', life: 3000 });
+  });
+  //console.log('Username:', username.value);
+  //console.log('Password:', password.value);
   // Aquí podrías hacer alguna lógica para iniciar sesión
-  router.push('/dashboard');
+  //router.push('/dashboard');
 };
 </script>
 
