@@ -13,11 +13,12 @@
       </template>
       <template #end>
         <div class="card flex justify-content-center">
-          <Button label="Login" icon="pi pi-user" @click="visible = true" />
-          <Dialog v-model:visible="visible" modal :pt="{ root: 'border-none', mask: { style: 'backdrop-filter: blur(2px)' } }">
-            <template #container="{ closeCallback }">
-              <div class="login-container">
-                <div class="login-title">Login</div>
+        <Button label="Login" icon="pi pi-user" @click="visible = true" />
+        <Dialog v-model:visible="visible" modal :pt="{ root: 'border-none', mask: { style: 'backdrop-filter: blur(2px)' } }">
+          <template #container="{ closeCallback }">
+            <div class="login-container">
+              <div class="login-title">Login</div>
+              <form @submit.prevent="handleLogin">
                 <div class="p-float-label">
                   <InputText id="username" v-model="username" type="username"/>
                   <label for="username">Username</label>
@@ -28,10 +29,11 @@
                 </div>
                 <div class="flex align-items-center gap-3">
                   <Button label="Cancel" @click="closeCallback" text class="cancel-button" />
-                  <Button label="Sign-In" @click="handleLogin" text class="signin-button" />
+                  <Button type="submit" label="Sign-In" text class="signin-button" />
                 </div>
-              </div>
-            </template>
+              </form>
+            </div>
+          </template>
           </Dialog>
         </div>
       </template>
@@ -64,23 +66,35 @@ const password = ref('');
 const toast = useToast();
 
 const handleLogin = () => {
-  axios.post('backend:8081/login', {
-    username: username.value,
-    password: password.value
-  })
-  .then(response => {
-    console.log(response.data); // Puedes mostrar la respuesta o realizar otras acciones necesarias
-    // Por ejemplo, redireccionar a otra página después de un inicio de sesión exitoso
-    router.push('/dashboard');
-  })
-  .catch(error => {
-    console.error('Error logging in:', error);
-    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Failed to log in', life: 3000 });
-  });
-  //console.log('Username:', username.value);
-  //console.log('Password:', password.value);
-  // Aquí podrías hacer alguna lógica para iniciar sesión
-  //router.push('/dashboard');
+  axios.post('http://127.0.0.1:8081/login', {
+  username: username.value,
+  password: password.value
+})
+.then(response => {
+  console.log(response.data);
+  router.push('/dashboard');
+})
+.catch(error => {
+  if (error.response) {
+    const statusCode = error.response.status;
+    switch (statusCode) {
+      case 400:
+        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Introduce el usuario y la contraseña', life: 3000 });
+        break;
+      case 401:
+        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Contraseña incorrecta', life: 3000 });
+        break;
+      case 404:
+        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Usuario no encontrado', life: 3000 });
+        break;
+      default:
+        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Error inesperado', life: 3000 });
+    }
+  } else {
+    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Error: ' + error.message, life: 3000 });
+  }
+});
+
 };
 </script>
 
@@ -97,7 +111,6 @@ const handleLogin = () => {
   display: flex;
   justify-content: center;
   vertical-align: center;
-  overflow: hidden;
   position: relative; /* Añadimos posición relativa para contener el texto */
 }
 
@@ -112,10 +125,10 @@ const handleLogin = () => {
 
 
 h1 {
-  margin-top: 40px;
-  font-size: 75px;
+  margin-top: 20px;
+  font-size: 70px;
   line-height: 60px;
-  background: linear-gradient(to bottom, var(--primary-500), var(--primary-800)); /* Degradado de verde a verde oscuro */
+  background: linear-gradient(to right, var(--primary-500), var(--primary-800)); /* Degradado de verde a verde oscuro */
   -webkit-background-clip: text; /* Clip para que el degradado solo afecte al texto */
   -webkit-text-fill-color: transparent; /* Relleno transparente para que el texto sea visible */
 }

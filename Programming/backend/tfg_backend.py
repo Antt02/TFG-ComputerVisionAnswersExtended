@@ -3,6 +3,7 @@ import time
 import mysql.connector
 import bcrypt
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware CORSMiddleware
 from pydantic import BaseModel
 
 class User(BaseModel):
@@ -10,32 +11,43 @@ class User(BaseModel):
     email: str
     password: str
 
-
 def connect_db():
     global connection
     try:
-        time.sleep(50) #Wait to db to finish starting
+        time.sleep(50) # Espera a que la base de datos termine de iniciarse
         connection = mysql.connector.connect(
             host="mysql",
             user="user",
             password="password",
             database="db"
         )
-        print("Connected Backend to tb", flush=True)
+        print("Conectado Backend a tb", flush=True)
     except Exception as e:
         print("Error:", e)
 
-
 app = fastapi.FastAPI()
+
+# Configura el middleware CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://127.0.0.1:8080",
+        "http://localhost:8080",
+        "http://0.0.0.0:8080"
+        ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Agrega OPTIONS aquí
+    allow_headers=["*"],
+)
 
 @app.get("/test")
 def test():
-    return {"message": "Working Service"}
+    return {"message": "Servicio Funcionando"}
 
 @app.post("/register")
 def register(user: User):
     if not user.username or not user.password or not user.email:
-        raise fastapi.HTTPException(status_code=400, detail="Missing username, password, or email in request")
+        raise fastapi.HTTPException(status_code=400, detail="Falta nombre de usuario, contraseña o correo electrónico en la solicitud")
 
     cursor = connection.cursor()
     try:
@@ -43,13 +55,11 @@ def register(user: User):
         hashed_pw = bcrypt.hashpw(password_bytes, bcrypt.gensalt(14))
         cursor.execute("INSERT INTO users (username, password, email) VALUES (%s, %s, %s)", (user.username, hashed_pw.decode("utf-8"), user.email))
         connection.commit()
-        return {"message": "User registered successfully"}
+        return {"message": "Usuario registrado correctamente"}
     except mysql.connector.Error as err:
-        raise fastapi.HTTPException(status_code=500, detail=f"Internal server error: {err}")
+        raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
     finally:
         cursor.close()
-
-
 
 @app.post("/login")
 async def login(request: fastapi.Request):
@@ -59,7 +69,7 @@ async def login(request: fastapi.Request):
     password = data.get("password")
 
     if not username or not password:
-        raise fastapi.HTTPException(status_code=400, detail="Missing username or password in request")
+        raise fastapi.HTTPException(status_code=400, detail="Falta nombre de usuario o contraseña en la solicitud")
 
     cursor = connection.cursor()
     try:
@@ -69,13 +79,13 @@ async def login(request: fastapi.Request):
         if user_data:
             hashed_pw = user_data[0].encode("utf-8")
             if bcrypt.checkpw(password.encode("utf-8"), hashed_pw):
-                return {"message": "Login successful"}
+                return {"message": "Inicio de sesión exitoso"}
             else:
-                raise fastapi.HTTPException(status_code=401, detail="Incorrect password")
+                raise fastapi.HTTPException(status_code=401, detail="Contraseña incorrecta")
         else:
-            raise fastapi.HTTPException(status_code=404, detail="User not found")
+            raise fastapi.HTTPException(status_code=404, detail="Usuario no encontrado")
     except mysql.connector.Error as err:
-        raise fastapi.HTTPException(status_code=500, detail=f"Internal server error: {err}")
+        raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
     finally:
         cursor.close()
 
