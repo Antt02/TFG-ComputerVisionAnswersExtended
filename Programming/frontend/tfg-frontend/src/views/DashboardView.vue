@@ -22,19 +22,19 @@
       <div class="form-row">
         <div class="form-group">
           <div class="p-float-label">
-            <InputText id="expedient_number" v-model="integer" type="integer" />
+            <InputText id="expedient_number" v-model="exp_number" type="integer" />
             <label for="expedient_number">Número d'expedient</label>
           </div>
         </div>
         <div class="form-group">
           <div class="p-float-label">
-            <AutoComplete id="accio_formativa" v-model="value" :suggestions="accions_formatives" @complete="accions_formatives_search" />
+            <AutoComplete id="accio_formativa" v-model="accio_formativa" :suggestions="accions_formatives" @complete="accions_formatives_search" />
             <label for="accio_formativa">Número de l'Acció Formativa</label>
           </div>
         </div>
         <div class="form-group">
           <div class="p-float-label">
-            <InputText id="group_number" v-model="integer" type="integer" />
+            <InputText id="group_number" v-model="group_number" type="integer" />
             <label for="group_number">Número de Grup</label>
           </div>
         </div>
@@ -104,7 +104,10 @@ import { useRouter } from "vue-router";
 const toast = useToast();
 const router = useRouter();
 
-const value = ref("");
+const accio_formativa = ref("");
+const exp_number = ref("");
+const group_number = ref("");
+
 const accions_formatives = ref([]);
 
 const accions_formatives_search = (event) => {
@@ -126,7 +129,6 @@ const firstPageUpload = () => {
 const secondPageUpload = () => {
     toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
 };
-
 const handleLogout = () => {
   // Lógica para cerrar sesión (ejemplo: eliminar credenciales de sesión)
   router.push('/'); // Redirigir a la página de inicio (u otra página deseada)

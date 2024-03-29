@@ -79,19 +79,19 @@ const handleLogin = () => {
     const statusCode = error.response.status;
     switch (statusCode) {
       case 400:
-        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Introduce el usuario y la contraseña', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Introduce el usuario y la contraseña', life: 3000 });
         break;
       case 401:
-        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Contraseña incorrecta', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Contraseña incorrecta', life: 3000 });
         break;
       case 404:
-        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Usuario no encontrado', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Usuario no encontrado', life: 3000 });
         break;
       default:
-        toast.add({ severity: 'error', summary: 'Error Message', detail: 'Error inesperado', life: 3000 });
+        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error inesperado', life: 3000 });
     }
   } else {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Error: ' + error.message, life: 3000 });
+    toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error: ' + error.message, life: 3000 });
   }
 });
 
@@ -107,7 +107,7 @@ const handleLogin = () => {
 .landing-page {
   font-family: 'San Francisco', Arial, sans-serif;
   background-color: #ffffff;
-  height: 90.1vh;
+  height: 89vh;
   display: flex;
   justify-content: center;
   vertical-align: center;
@@ -144,11 +144,15 @@ h2 {
   width: auto;
   max-height: auto;
   overflow: hidden;
+  mask-image: linear-gradient(
+    black 85%,
+    transparent
+  );
 }
 
 .landing-image {
-  margin-top: 20px;
-  width: 60%; /* Ancho del 80% del contenedor */
+  margin-top: 10px;
+  width: 55%; /* Ancho del 80% del contenedor */
   height: auto; /* Altura automática para mantener la proporción */
   vertical-align: top;
 }

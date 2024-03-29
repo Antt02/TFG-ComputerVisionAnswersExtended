@@ -3,7 +3,7 @@ import time
 import mysql.connector
 import bcrypt
 import uvicorn
-from fastapi.middleware.cors import CORSMiddleware  # Importa el middleware CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 class User(BaseModel):
@@ -14,7 +14,7 @@ class User(BaseModel):
 def connect_db():
     global connection
     try:
-        time.sleep(50) # Espera a que la base de datos termine de iniciarse
+        time.sleep(50) # Wait for db to start
         connection = mysql.connector.connect(
             host="mysql",
             user="user",
@@ -27,7 +27,6 @@ def connect_db():
 
 app = fastapi.FastAPI()
 
-# Configura el middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -36,7 +35,7 @@ app.add_middleware(
         "http://0.0.0.0:8080"
         ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # Agrega OPTIONS aquí
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -79,7 +78,7 @@ async def login(request: fastapi.Request):
         if user_data:
             hashed_pw = user_data[0].encode("utf-8")
             if bcrypt.checkpw(password.encode("utf-8"), hashed_pw):
-                return {"message": "Inicio de sesión exitoso"}
+                return {"message": "Inicio de sesión exitoso", "username": username}
             else:
                 raise fastapi.HTTPException(status_code=401, detail="Contraseña incorrecta")
         else:

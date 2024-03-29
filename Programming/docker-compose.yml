@@ -21,7 +21,7 @@ services:
   
   frontend:
     build:
-      context: ./frontend/tfg-frontend  # Ruta al directorio del frontend
+      context: ./frontend/tfg-frontend
     ports:
       - "5173:5173" 
       - "8080:8080"
