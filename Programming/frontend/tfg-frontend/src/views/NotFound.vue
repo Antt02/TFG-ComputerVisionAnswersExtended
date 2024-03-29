@@ -10,8 +10,8 @@
         <div class="bullshit">
           <div class="bullshit__oops">OOPS!</div>
           <div class="bullshit__headline">{{ message }}</div>
-          <div class="bullshit__info">Please check that the URL you entered is correct, or click the button below to return to the homepage.</div>
-          <router-link to="/" class="bullshit__return-home">Back to home</router-link>
+          <div class="bullshit__info">Comprueba que la URL es correcta o vuelve a Home:</div>
+          <router-link to="/" class="bullshit__return-home">Home</router-link>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
     name: 'Page404',
     computed: {
       message() {
-        return 'The webmaster said that you cannot enter this page...'
+        return 'Mmmmm... Parece que te has perdido...'
       }
     }
   }
