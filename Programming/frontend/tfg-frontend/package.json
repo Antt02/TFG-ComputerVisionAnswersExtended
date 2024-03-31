@@ -12,6 +12,7 @@
     "autoprefixer": "^10.4.19",
     "axios": "^1.6.8",
     "bcrypt": "^5.1.1",
+    "express": "^4.19.2",
     "pinia": "^2.1.7",
     "primeicons": "^6.0.1",
     "primevue": "^3.50.0",

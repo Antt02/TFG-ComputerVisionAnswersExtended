@@ -72,13 +72,13 @@ async def login(request: fastapi.Request):
 
     cursor = connection.cursor()
     try:
-        cursor.execute("SELECT password FROM users WHERE username = %s", (username,))
+        cursor.execute("SELECT password, username, email FROM users WHERE username = %s", (username,))
         user_data = cursor.fetchone()
         
         if user_data:
             hashed_pw = user_data[0].encode("utf-8")
             if bcrypt.checkpw(password.encode("utf-8"), hashed_pw):
-                return {"message": "Inicio de sesión exitoso", "username": username}
+                return {"message": "Inicio de sesión exitoso", "username": user_data[1], "email": user_data[2]}
             else:
                 raise fastapi.HTTPException(status_code=401, detail="Contraseña incorrecta")
         else:

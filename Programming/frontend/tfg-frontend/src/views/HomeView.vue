@@ -57,9 +57,12 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from "primevue/usetoast";
+import { useUserStore } from '../stores/UserStore';
+
 import axios from 'axios'
 
 const router = useRouter();
+const store = useUserStore();
 const visible = ref(false);
 const username = ref('');
 const password = ref('');
@@ -72,6 +75,10 @@ const handleLogin = () => {
 })
 .then(response => {
   console.log(response.data);
+  const { username, email } = response.data;
+  console.log("---- STORE USER ---")
+  store.login(username, email)
+  console.log(store.getUser)
   router.push('/dashboard');
 })
 .catch(error => {
