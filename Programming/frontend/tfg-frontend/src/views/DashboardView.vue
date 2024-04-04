@@ -100,9 +100,11 @@
 import { ref } from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
+import { useUserStore } from '../stores/UserStore';
 
 const toast = useToast();
 const router = useRouter();
+const store = useUserStore();
 
 const accio_formativa = ref("");
 const exp_number = ref("");
@@ -130,7 +132,7 @@ const secondPageUpload = () => {
     toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
 };
 const handleLogout = () => {
-  // Lógica para cerrar sesión (ejemplo: eliminar credenciales de sesión)
+  store.logout()
   router.push('/'); // Redirigir a la página de inicio (u otra página deseada)
 };
 </script>

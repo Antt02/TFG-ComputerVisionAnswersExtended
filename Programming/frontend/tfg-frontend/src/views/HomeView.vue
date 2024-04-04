@@ -69,38 +69,43 @@ const password = ref('');
 const toast = useToast();
 
 const handleLogin = () => {
-  axios.post('http://127.0.0.1:8081/login', {
-  username: username.value,
-  password: password.value
-})
-.then(response => {
-  console.log(response.data);
-  const { username, email } = response.data;
-  console.log("---- STORE USER ---")
-  store.login(username, email)
-  console.log(store.getUser)
-  router.push('/dashboard');
-})
-.catch(error => {
-  if (error.response) {
-    const statusCode = error.response.status;
-    switch (statusCode) {
-      case 400:
-        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Introduce el usuario y la contraseña', life: 3000 });
-        break;
-      case 401:
-        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Contraseña incorrecta', life: 3000 });
-        break;
-      case 404:
-        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Usuario no encontrado', life: 3000 });
-        break;
-      default:
-        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error inesperado', life: 3000 });
-    }
-  } else {
-    toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error: ' + error.message, life: 3000 });
+  if (process.env.NODE_ENV != "development"){
+      axios.post('http://127.0.0.1:8081/login', {
+      username: username.value,
+      password: password.value
+    })
+    .then(response => {
+      console.log(response.data);
+      const { username, email } = response.data;
+      console.log("---- STORE USER ---")
+      store.login(username, email)
+      console.log(store.getUser)
+      router.push('/dashboard');
+    })
+    .catch(error => {
+      if (error.response) {
+        const statusCode = error.response.status;
+        switch (statusCode) {
+          case 400:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Introduce el usuario y la contraseña', life: 3000 });
+            break;
+          case 401:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Contraseña incorrecta', life: 3000 });
+            break;
+          case 404:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Usuario no encontrado', life: 3000 });
+            break;
+          default:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error inesperado', life: 3000 });
+        }
+      } else {
+        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error: ' + error.message, life: 3000 });
+      }
+    });
+  }else{ //For development
+    store.login("admin-dev", "admin-dev")
+    router.push('/dashboard');
   }
-});
 
 };
 </script>
