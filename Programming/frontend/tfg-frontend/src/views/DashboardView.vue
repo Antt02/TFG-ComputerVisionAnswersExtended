@@ -19,7 +19,7 @@
     </Toolbar>
 
     <div class="form-container">
-      <!-- Número de expediente, número de acción formativa y número de grupo -->
+      <!-- Número de expediente y acción formativa -->
       <div class="form-row">
         <div class="form-group">
           <div class="p-float-label">
@@ -33,26 +33,24 @@
             <label for="accio_formativa">Acció Formativa</label>
           </div>
         </div>
-        <div class="form-group">
-          <div class="p-float-label">
-            <InputText id="group_number" v-model="group_number" type="integer" />
-            <label for="group_number">Número de Grup</label>
-          </div>
+      </div>
+      
+      <!-- Número de grupo y modalidad -->
+    <div class="form-row">
+      <!-- Número de grupo -->
+      <div class="form-group">
+        <div class="p-float-label">
+          <InputText id="group_number" v-model="group_number" type="integer" />
+          <label for="group_number">Número de Grup</label>
         </div>
       </div>
-
-      <!-- Denominación y modalidad -->
-      <div class="form-row">
-        <div class="form-group">
-          <div class="p-float-label">
-            <InputText v-model="denomination" disabled placeholder="Disabled" />
-            <label for="denomination">Denominación</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <Dropdown v-model="selectedModality" :options="modality" optionLabel="mode" placeholder="Selecciona Una Modalitat" class="w-full md:w-14rem" />
+      <!-- Modalidad -->
+      <div class="form-group">
+        <div class="p-float-label">
+          <SelectButton v-model="v_modality" :options="modality_options" aria-labelledby="Modalitat" />
         </div>
       </div>
+    </div>
 
       <!-- Calendario de inicio y fin -->
       <div class="form-row">
@@ -82,6 +80,9 @@
             </FileUpload>
           </div>
         </div>
+
+        <div class="upload-separator"></div> <!-- Separador -->
+
         <div class="form-group">
           <div class="card upload-card">
             <Toast />
@@ -93,6 +94,11 @@
           </div>
         </div>
       </div>
+
+      <div class="submit-button-container">
+        <Button label="Submit" icon="pi pi-check" iconPos="right" class="w-100" />
+      </div>
+
     </div>
   </div>
 </template>
@@ -141,11 +147,8 @@ onMounted(async () => {
 });
 
 
-const selectedModality = ref();
-const modality = ref([
-    { mode: 'Presencial'},
-    { mode: 'Virtual'}
-]);
+const v_modality = ref('Presencial');
+const modality_options = ref(['Presencial', 'Virtual']);
 
 const start_date = ref();
 const end_date = ref();
@@ -188,24 +191,32 @@ const handleLogout = () => {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 20px; /* Reducido el espacio entre los elementos */
   margin-bottom: 10px;
   margin-top: 35px;
 }
 
 .form-group {
   flex: 1;
-  max-width: 400px; /* Aumenta el ancho del formulario */
+  max-width: 300px; /* Reducido el ancho máximo */
 }
 
 .p-float-label {
   width: 100%;
+  max-width: 100%; /* Ancho máximo del label */
 }
 
 .card.upload-card {
-  width: 600px; /* Aumenta el ancho de los uploads */
-  height: 500px; /* Aumenta la altura de los uploads */
-  margin-bottom: 10px;
+  width: 500px; /* Ancho más grande */
+  height: 300px; /* Altura más pequeña */
+  align-items: center;
+  margin-bottom: 20px; /* Aumentar la separación vertical entre los uploads */
+  box-sizing: border-box; /* Incluir el espacio de relleno en el tamaño total */
+}
+
+/* Nuevos estilos para separar los uploads */
+.upload-separator {
+  width: 170px; /* Altura del separador */
 }
 
 .toolbar-start {
@@ -220,5 +231,14 @@ const handleLogout = () => {
 
 .toolbar-end {
   margin-left: auto;
+}
+
+.submit-button-container {
+  position: fixed; /* Posicionamiento fijo */
+  bottom: 0; /* Alinear en la parte inferior */
+  right: 0; /* Alinear a la derecha */
+  width: 100%; /* Ancho completo */
+  padding: 20px; /* Espaciado interior */
+  text-align: right; /* Alinear el contenido a la derecha */
 }
 </style>
