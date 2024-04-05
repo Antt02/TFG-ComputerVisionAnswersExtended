@@ -17,6 +17,7 @@
         </div>
       </template>
     </Toolbar>
+
     <div class="form-container">
       <!-- Número de expediente, número de acción formativa y número de grupo -->
       <div class="form-row">
@@ -28,8 +29,8 @@
         </div>
         <div class="form-group">
           <div class="p-float-label">
-            <AutoComplete id="accio_formativa" v-model="accio_formativa" :suggestions="accions_formatives" @complete="accions_formatives_search" />
-            <label for="accio_formativa">Número de l'Acció Formativa</label>
+            <AutoComplete v-model="accio_formativa" inputId="accio_formativa" :suggestions="suggestions" @complete="accions_formatives_search" />
+            <label for="accio_formativa">Acció Formativa</label>
           </div>
         </div>
         <div class="form-group">
@@ -44,7 +45,7 @@
       <div class="form-row">
         <div class="form-group">
           <div class="p-float-label">
-            <InputText v-model="denomination" mode='disabled'/>
+            <InputText v-model="denomination" disabled placeholder="Disabled" />
             <label for="denomination">Denominación</label>
           </div>
         </div>
@@ -97,7 +98,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref, computed} from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { useUserStore } from '../stores/UserStore';
@@ -111,15 +112,41 @@ const exp_number = ref("");
 const group_number = ref("");
 
 const accions_formatives = ref([]);
+const suggestions = ref([]); // Utiliza una referencia reactiva para almacenar las sugerencias
+
+let tupleArray = [];
 
 const accions_formatives_search = (event) => {
-  accions_formatives.value = [...Array(10).keys()].map((item) => event.query + '-' + item); //TODO: Implementar lógica coger datos de bbdd
-}
+  const filteredTupleArray = tupleArray.filter(tuple => {
+    const [id, name, number] = tuple;
+    return number.includes(event.query) || name.toLowerCase().includes(event.query.toLowerCase());
+  });
+
+  // Formatea las sugerencias como número de acción formativa y nombre combinados
+  suggestions.value = filteredTupleArray.map(tuple => `${tuple[2]} - ${tuple[1]}`); // Se asume que el número está en la tercera posición del tuple y el nombre en la segunda posición
+};
+
+onMounted(async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:8081/accionsformatives');
+    const accions_formatives_data = await response.json();
+    accions_formatives.value = JSON.parse(accions_formatives_data);
+    
+    tupleArray = accions_formatives.value.map(item => [item.id, item.name, item.number]);
+
+    console.log(tupleArray);
+  } catch (error) {
+    console.error('Error al obtener los datos del backend:', error);
+  }
+});
+
+
 const selectedModality = ref();
 const modality = ref([
     { mode: 'Presencial'},
     { mode: 'Virtual'}
 ]);
+
 const start_date = ref();
 const end_date = ref();
 const integer = ref();

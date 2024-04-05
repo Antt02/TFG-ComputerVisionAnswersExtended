@@ -33,7 +33,7 @@ def create_tables_if_not_exist():
         if not table_questions_exists:
             cursor.execute("CREATE TABLE QUESTIONS (id INT AUTO_INCREMENT PRIMARY KEY)")  # Especifica las columnas aquí
         if not table_courses_exists:
-            cursor.execute("CREATE TABLE COURSES (id INT AUTO_INCREMENT PRIMARY KEY)")  # Especifica las columnas aquí
+            cursor.execute("CREATE TABLE COURSES (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(50), number VARCHAR(3))")  # Especifica las columnas aquí
 
         connection.commit()
 

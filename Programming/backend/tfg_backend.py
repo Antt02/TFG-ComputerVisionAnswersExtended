@@ -3,6 +3,7 @@ import time
 import mysql.connector
 import bcrypt
 import uvicorn
+import json
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -83,6 +84,18 @@ async def login(request: fastapi.Request):
                 raise fastapi.HTTPException(status_code=401, detail="Contraseña incorrecta")
         else:
             raise fastapi.HTTPException(status_code=404, detail="Usuario no encontrado")
+    except mysql.connector.Error as err:
+        raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
+    finally:
+        cursor.close()
+
+@app.get("/accionsformatives")
+async def accionsformatives():
+    cursor = connection.cursor(dictionary=True)  # Para obtener resultados como diccionarios
+    try:
+        cursor.execute("SELECT * FROM COURSES")
+        courses = cursor.fetchall()
+        return json.dumps(courses) 
     except mysql.connector.Error as err:
         raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
     finally:
