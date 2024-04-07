@@ -33,3 +33,16 @@ services:
       - mysql
     ports:
       - "8081:8081"
+    volumes:
+      - backend-files:/app/files
+
+  ml_module:
+    build:
+      context: ./ML_module
+    depends_on:
+      - backend
+    volumes:
+      - backend-files:/app/files
+
+volumes:
+  backend-files:

@@ -1,11 +1,15 @@
 import fastapi
 import time
+import os
+import uuid
+import shutil
 import mysql.connector
 import bcrypt
 import uvicorn
 import json
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import List
 
 class User(BaseModel):
     username: str
@@ -68,6 +72,8 @@ async def login(request: fastapi.Request):
     username = data.get("username")
     password = data.get("password")
 
+    User.username = username
+
     if not username or not password:
         raise fastapi.HTTPException(status_code=400, detail="Falta nombre de usuario o contraseña en la solicitud")
 
@@ -100,6 +106,25 @@ async def accionsformatives():
         raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
     finally:
         cursor.close()
+
+@app.post("/uploadfirstpage")
+async def uploadfirstpage(files: List[fastapi.UploadFile]):
+    upload_id= uuid.uuid4()
+    save_path = os.path.join("/app/files", str(upload_id), "first_page")
+    os.makedirs(save_path, exist_ok=True)
+    for file in files:
+        file_path = os.path.join(save_path, file.filename)
+        try:
+            # Save the file to the destination directory
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(file.file, buffer)
+        except Exception as e:
+            # Handle any errors that occur during file saving
+            raise fastapi.exceptions.HTTPException(status_code=500, detail=f"Failed to save file: {e}")
+        finally:
+            # Close the file stream
+            file.file.close()
+    return{"state":200}
 
 if __name__ == "__main__":
     connect_db()
