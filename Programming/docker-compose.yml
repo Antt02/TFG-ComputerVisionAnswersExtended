@@ -35,6 +35,7 @@ services:
       - "8081:8081"
     volumes:
       - backend-files:/app/files
+      - ml-module-files:/app/ml_module
 
   ml_module:
     build:
@@ -43,6 +44,7 @@ services:
       - backend
     volumes:
       - backend-files:/app/files
-
+      - ml-module-files:/app/ml_module
 volumes:
   backend-files:
+  ml-module-files:

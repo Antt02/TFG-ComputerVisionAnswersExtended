@@ -1,6 +1,7 @@
 import fastapi
 import time
 import os
+import subprocess
 import uuid
 import shutil
 import mysql.connector
@@ -109,7 +110,8 @@ async def accionsformatives():
 
 @app.post("/uploadfirstpage")
 async def uploadfirstpage(files: List[fastapi.UploadFile]):
-    upload_id= uuid.uuid4()
+    upload_id = uuid.uuid4()
+    print(upload_id)
     save_path = os.path.join("/app/files", str(upload_id), "first_page")
     os.makedirs(save_path, exist_ok=True)
     for file in files:
@@ -124,7 +126,25 @@ async def uploadfirstpage(files: List[fastapi.UploadFile]):
         finally:
             # Close the file stream
             file.file.close()
-    return{"state":200}
+    return{"state":200, "uploadid":upload_id}
+
+
+@app.post("/process")
+async def process(request: fastapi.Request):
+    data = await request.json()
+    upload_id = data.get("upload_id")
+
+    try:
+        os.chdir("files/" + str(upload_id) + "/first_page")
+        output = subprocess.check_output(['ls'])
+        print("Contenido del directorio actual:")
+        print(output.decode())  # Decodificar la salida de bytes a cadena y mostrarla
+    except Exception as e:
+        print("Error al ejecutar el comando 'ls':", e)
+
+    print("Processing " + str(upload_id))
+    return "Processing " + str(upload_id)
+    
 
 if __name__ == "__main__":
     connect_db()

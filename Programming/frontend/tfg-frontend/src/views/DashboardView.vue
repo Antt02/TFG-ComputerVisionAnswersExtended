@@ -96,7 +96,7 @@
       </div>
 
       <div class="submit-button-container">
-        <Button label="Submit" icon="pi pi-check" iconPos="right" class="w-100" />
+        <Button label="Submit" icon="pi pi-check" iconPos="right" class="w-100" @click="submitForm"/>
       </div>
 
     </div>
@@ -117,8 +117,14 @@ const accio_formativa = ref("");
 const exp_number = ref("");
 const group_number = ref("");
 
+const start_date = ref();
+const end_date = ref();
+const integer = ref();
+const denomination = ref("");
+const responseUploadID = ref("");
+
 const accions_formatives = ref([]);
-const suggestions = ref([]); // Utiliza una referencia reactiva para almacenar las sugerencias
+const suggestions = ref([]);
 
 let tupleArray = [];
 
@@ -150,21 +156,54 @@ onMounted(async () => {
 const v_modality = ref('Presencial');
 const modality_options = ref(['Presencial', 'Virtual']);
 
-const start_date = ref();
-const end_date = ref();
-const integer = ref();
-const denomination = ref("");
+const firstPageUpload = (event) => {
+  const response = event.xhr.responseText;
+  const responseData = JSON.parse(response);
 
-const firstPageUpload = () => {
+  const responseStatus = responseData.state;
+  responseUploadID.value = responseData.uploadid;
+
+  if (responseStatus === 200) {
+    // Mostrar el toast de éxito
     toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
+  }
 };
+
 const secondPageUpload = () => {
     toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
 };
+
 const handleLogout = () => {
   store.logout()
   router.push('/'); // Redirigir a la página de inicio (u otra página deseada)
 };
+
+const submitForm = () => {
+    // Realiza una llamada al backend utilizando fetch, axios u otra librería de tu elección
+    fetch('http://127.0.0.1:8081/process', {
+      method: 'POST', // Método HTTP de la solicitud
+      headers: {
+        'Content-Type': 'application/json' // Tipo de contenido de la solicitud (JSON en este ejemplo)
+      },
+      // Cuerpo de la solicitud (datos que se enviarán al backend)
+      body: JSON.stringify({
+        "upload_id": responseUploadID.value
+      })
+    })
+    .then(response => {
+      if (response.ok) {
+        // Si la respuesta del backend es exitosa (código de estado 200)
+        // Aquí puedes manejar la respuesta de acuerdo a tus necesidades
+        console.log('Processed');
+      } else {
+        console.error('Error al realizar la solicitud:', response.statusText);
+      }
+    })
+    .catch(error => {
+      // Si ocurre un error al realizar la solicitud, puedes manejarlo aquí
+      console.error('Error al realizar la solicitud:', error);
+    });
+  }
 </script>
 
 <style scoped>
