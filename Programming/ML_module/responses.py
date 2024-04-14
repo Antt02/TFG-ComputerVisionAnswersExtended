@@ -1,3 +1,5 @@
+import os
+import sys
 import cv2
 import utlis
 import numpy as np
@@ -6,7 +8,7 @@ import numpy as np
 width = 800
 height = 1200
 cropped_height = height//3
-possible_answers = [2, 10, 3, 1, 1, 6, 6, 3, 3, 5]
+possible_answers = [3, 10, 3, 1, 1, 6, 6, 3, 3, 5]
 #possible_answers = [0, 1, 2, 10, 3, 1, 1, 6, 6, 3, 3, 5] #Position 0 not used. Question 8 2 possible answers
 
 global img_contours
@@ -52,7 +54,6 @@ def answers_corners(rectangles):
 def correct_rectangles(rectangles):
     corrected_rect = []
     for rect in rectangles:
-        print(rect)
         rect = utlis.reshape(rect)
         pt1 = np.float32(rect)
         pt2 = np.float32(np.float32([[0,0],[400,0], [0,cropped_height],[400,cropped_height]]))
@@ -67,8 +68,8 @@ def correct_rectangles(rectangles):
                 [img_contours, img_contours2, np.zeros_like(answers), np.zeros_like(answers)])
     img_stacked = utlis.stackImages(image_array, 0.5)
 
-    cv2.imshow("Stacked", img_stacked)
-    cv2.waitKey(0)
+    #cv2.imshow("Stacked", img_stacked)
+    #cv2.waitKey(0)
     return corrected_rect
 
 def threshold_answers(rectangles):
@@ -94,36 +95,53 @@ def get_answer(rectangles):
             color = (0, 255, 0) if h[3] == -1 else (0, 0, 255)  #Green => Exterior, Red => Interior
             cv2.drawContours(color_rect, [contour], -1, color, 3)
 
-        cv2.imshow('Rect'+str(i), color_rect)
-        cv2.waitKey(0)
+        #cv2.imshow('Rect'+str(i), color_rect)
+        #cv2.waitKey(0)#
 
 def count_pixels(answer, options):
-    cv2.imshow("Answer", answer)
-    cv2.waitKey(0)
+    #cv2.imshow("Answer", answer)
+    #cv2.waitKey(0)
     parts = utlis.separe_answers(answer, options)
     
     answer_pixels = []
     for part in parts:
         white_pixels = utlis.max_pixels(part)
+        print("white pixels: ", white_pixels)
         answer_pixels.append(white_pixels)
 
-    print ("ANSWER: " + str(answer_pixels.index(max(answer_pixels)) + 1))
+    max_pixels = max(answer_pixels)
+    second_max_pixels = sorted(answer_pixels, reverse=True)[1] if len(answer_pixels) > 1 else 0
 
+    if second_max_pixels > 0 and (max_pixels - second_max_pixels) / max_pixels < 0.25:
+        print("Difference between first and second answer less than 25%, returning 0")
+        return 0
+    
+    print ("ANSWER: " + str(answer_pixels.index(max(answer_pixels)) + 1))
     return answer_pixels.index(max(answer_pixels)) + 1
 
 
 if __name__ == "__main__":
-    image_path = "./Images/numbered.jpg"
-
-    answers = load_image(image_path)
-    img_contours = answers.copy()
-    img_contours2 = answers.copy()
-    clear_answers = process_image(answers)
+    folder_path = sys.argv[1]
     
-    contours = get_contours(clear_answers)
-    corners = answers_corners(contours)
-    corners = correct_rectangles(corners)
-    answers = threshold_answers(corners)
-    for i, answer in enumerate(answers):
-        print("Seeing Question:" + str(i+2))
-        answers = count_pixels(answer, possible_answers[i])
+    image_files = os.listdir(folder_path)
+
+    for image_file in image_files:
+        # Construct the full path to the image
+        image_path = os.path.join(folder_path, image_file)
+        
+        # Load the image
+        answers = load_image(image_path)
+        img_contours = answers.copy()
+        img_contours2 = answers.copy()
+        clear_answers = process_image(answers)
+        
+        contours = get_contours(clear_answers)
+        corners = answers_corners(contours)
+        corners = correct_rectangles(corners)
+        answers = threshold_answers(corners)
+        
+        # Iterate over each question and answer in the current image
+        for i, answer in enumerate(answers):
+            print("Analyzing image:", image_file)
+            print("Seeing Question:", i+2)
+            answers = count_pixels(answer, possible_answers[i])

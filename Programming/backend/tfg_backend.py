@@ -1,6 +1,7 @@
 import fastapi
 import time
 import os
+import asyncio
 import subprocess
 import uuid
 import shutil
@@ -135,12 +136,20 @@ async def process(request: fastapi.Request):
     upload_id = data.get("upload_id")
 
     try:
-        os.chdir("files/" + str(upload_id) + "/first_page")
-        output = subprocess.check_output(['ls'])
-        print("Contenido del directorio actual:")
-        print(output.decode())  # Decodificar la salida de bytes a cadena y mostrarla
+        os.chdir("ml_module")
+        #os.chdir("files/" + str(upload_id) + "/first_page")
+        process = await asyncio.create_subprocess_exec(
+            'python', 'responses.py', str("../files/" + upload_id + "/first_page"),
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+        if stdout:
+            print(f"Salida estándar: {stdout.decode()}")
+        if stderr:
+            print(f"Error estándar: {stderr.decode()}")
     except Exception as e:
-        print("Error al ejecutar el comando 'ls':", e)
+        print("Error al ejecutar el comando: ", e)
 
     print("Processing " + str(upload_id))
     return "Processing " + str(upload_id)

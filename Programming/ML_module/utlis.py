@@ -152,8 +152,8 @@ def separe_answers(answers, parts):
         end = (i + 1) * part_height
         partition = answers[start:end, :]
 
-        cv2.imshow("Partition", partition)
-        cv2.waitKey(0)
+        #cv2.imshow("Partition", partition)
+        #cv2.waitKey(0)
 
         parts_arr.append(partition)
 

@@ -73,7 +73,7 @@
         <div class="form-group">
           <div class="card upload-card">
             <Toast />
-            <FileUpload name="files" url="http://127.0.0.1:8081/uploadfirstpage" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
+            <FileUpload name="files" url="http://127.0.0.1:8081/uploadfirstpage" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000000">
               <template #empty>
                 <p>Primera Pàgina</p>
               </template>
