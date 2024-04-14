@@ -73,7 +73,7 @@
         <div class="form-group">
           <div class="card upload-card">
             <Toast />
-            <FileUpload name="files" url="http://127.0.0.1:8081/uploadfirstpage" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000000">
+            <FileUpload name="files" url="http://127.0.0.1:8081/uploadfirstpage" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000000" @before-send="beforeSend">
               <template #empty>
                 <p>Primera Pàgina</p>
               </template>
@@ -156,6 +156,11 @@ onMounted(async () => {
 const v_modality = ref('Presencial');
 const modality_options = ref(['Presencial', 'Virtual']);
 
+const beforeSend = (request) => {
+  request.xhr.setRequestHeader('Username', store.getUser.username);
+  return request
+}
+
 const firstPageUpload = (event) => {
   const response = event.xhr.responseText;
   const responseData = JSON.parse(response);
@@ -175,32 +180,26 @@ const secondPageUpload = () => {
 
 const handleLogout = () => {
   store.logout()
-  router.push('/'); // Redirigir a la página de inicio (u otra página deseada)
+  router.push('/');
 };
 
 const submitForm = () => {
-    // Realiza una llamada al backend utilizando fetch, axios u otra librería de tu elección
     fetch('http://127.0.0.1:8081/process', {
-      method: 'POST', // Método HTTP de la solicitud
+      method: 'POST',
       headers: {
-        'Content-Type': 'application/json' // Tipo de contenido de la solicitud (JSON en este ejemplo)
+        'Content-Type': 'application/json',
+        'Username' : store.getUser.username
       },
-      // Cuerpo de la solicitud (datos que se enviarán al backend)
-      body: JSON.stringify({
-        "upload_id": responseUploadID.value
-      })
+      body: JSON.stringify({})
     })
     .then(response => {
       if (response.ok) {
-        // Si la respuesta del backend es exitosa (código de estado 200)
-        // Aquí puedes manejar la respuesta de acuerdo a tus necesidades
         console.log('Processed');
       } else {
         console.error('Error al realizar la solicitud:', response.statusText);
       }
     })
     .catch(error => {
-      // Si ocurre un error al realizar la solicitud, puedes manejarlo aquí
       console.error('Error al realizar la solicitud:', error);
     });
   }
@@ -230,32 +229,32 @@ const submitForm = () => {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px; /* Reducido el espacio entre los elementos */
+  gap: 20px;
   margin-bottom: 10px;
   margin-top: 35px;
 }
 
 .form-group {
   flex: 1;
-  max-width: 300px; /* Reducido el ancho máximo */
+  max-width: 300px;
 }
 
 .p-float-label {
   width: 100%;
-  max-width: 100%; /* Ancho máximo del label */
+  max-width: 100%;
 }
 
 .card.upload-card {
-  width: 500px; /* Ancho más grande */
-  height: 300px; /* Altura más pequeña */
+  width: 500px;
+  height: 300px;
   align-items: center;
-  margin-bottom: 20px; /* Aumentar la separación vertical entre los uploads */
-  box-sizing: border-box; /* Incluir el espacio de relleno en el tamaño total */
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
-/* Nuevos estilos para separar los uploads */
+
 .upload-separator {
-  width: 170px; /* Altura del separador */
+  width: 170px;
 }
 
 .toolbar-start {
@@ -273,11 +272,11 @@ const submitForm = () => {
 }
 
 .submit-button-container {
-  position: fixed; /* Posicionamiento fijo */
-  bottom: 0; /* Alinear en la parte inferior */
-  right: 0; /* Alinear a la derecha */
-  width: 100%; /* Ancho completo */
-  padding: 20px; /* Espaciado interior */
-  text-align: right; /* Alinear el contenido a la derecha */
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  padding: 20px;
+  text-align: right;
 }
 </style>
