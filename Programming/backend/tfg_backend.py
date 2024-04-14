@@ -110,36 +110,35 @@ async def accionsformatives():
         cursor.close()
 
 @app.post("/uploadfirstpage")
-async def uploadfirstpage(files: List[fastapi.UploadFile]):
-    upload_id = uuid.uuid4()
-    print(upload_id)
-    save_path = os.path.join("/app/files", str(upload_id), "first_page")
+async def uploadfirstpage(files: List[fastapi.UploadFile], username: str = fastapi.Header(None)):
+    if not username:
+        raise fastapi.exceptions.HTTPException(status_code=400, detail="Username header is missing")
+
+    save_path = os.path.join("/app/files", username, "first_page")
     os.makedirs(save_path, exist_ok=True)
+
     for file in files:
         file_path = os.path.join(save_path, file.filename)
         try:
-            # Save the file to the destination directory
             with open(file_path, "wb") as buffer:
                 shutil.copyfileobj(file.file, buffer)
         except Exception as e:
-            # Handle any errors that occur during file saving
             raise fastapi.exceptions.HTTPException(status_code=500, detail=f"Failed to save file: {e}")
         finally:
-            # Close the file stream
             file.file.close()
-    return{"state":200, "uploadid":upload_id}
+
+    return {"state": 200, "username": username}
 
 
 @app.post("/process")
-async def process(request: fastapi.Request):
-    data = await request.json()
-    upload_id = data.get("upload_id")
+async def process(request: fastapi.Request, username: str = fastapi.Header(None)):
+    if not username:
+        raise fastapi.exceptions.HTTPException(status_code=400, detail="Username header is missing")
 
     try:
         os.chdir("ml_module")
-        #os.chdir("files/" + str(upload_id) + "/first_page")
         process = await asyncio.create_subprocess_exec(
-            'python', 'responses.py', str("../files/" + upload_id + "/first_page"),
+            'python', 'responses.py', str("../files/" + username + "/first_page"),
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
@@ -151,8 +150,8 @@ async def process(request: fastapi.Request):
     except Exception as e:
         print("Error al ejecutar el comando: ", e)
 
-    print("Processing " + str(upload_id))
-    return "Processing " + str(upload_id)
+    print("Processing " + str(username))
+    return "Processing " + str(username)
     
 
 if __name__ == "__main__":
