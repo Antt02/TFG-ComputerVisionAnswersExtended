@@ -121,7 +121,6 @@ const start_date = ref();
 const end_date = ref();
 const integer = ref();
 const denomination = ref("");
-const responseUploadID = ref("");
 
 const accions_formatives = ref([]);
 const suggestions = ref([]);
@@ -166,7 +165,6 @@ const firstPageUpload = (event) => {
   const responseData = JSON.parse(response);
 
   const responseStatus = responseData.state;
-  responseUploadID.value = responseData.uploadid;
 
   if (responseStatus === 200) {
     // Mostrar el toast de éxito
@@ -190,7 +188,14 @@ const submitForm = () => {
         'Content-Type': 'application/json',
         'Username' : store.getUser.username
       },
-      body: JSON.stringify({})
+      body: JSON.stringify({
+        "exp_number":exp_number.value,
+        "accio_formativa":accio_formativa.value,
+        "group_number":group_number.value,
+        "v_modality":v_modality.value,
+        "start_date":start_date._value,
+        "end_date":end_date._value
+      })
     })
     .then(response => {
       if (response.ok) {

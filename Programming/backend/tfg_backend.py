@@ -132,6 +132,15 @@ async def uploadfirstpage(files: List[fastapi.UploadFile], username: str = fasta
 
 @app.post("/process")
 async def process(request: fastapi.Request, username: str = fastapi.Header(None)):
+    data = await request.json()
+
+    exp_number = data.get("exp_number")
+    accio_formativa = data.get("accio_formativa")
+    group_number = data.get("group_number")
+    v_modality = data.get("v_modality")
+    start_date = data.get("start_date")
+    end_date = data.get("end_date")
+
     if not username:
         raise fastapi.exceptions.HTTPException(status_code=400, detail="Username header is missing")
 
