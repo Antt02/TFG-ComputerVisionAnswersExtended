@@ -3,9 +3,11 @@ import HomeView from '../views/HomeView.vue'
 import About from '../views/AboutView.vue'
 import Dashboard from '../views/DashboardView.vue'
 import NotFound from '../views/NotFound.vue'
+import HumanCheck from '../views/HumanCheck.vue'
 
 import { useToast } from "primevue/usetoast";
 import { useUserStore } from '../stores/UserStore';
+
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,12 +28,18 @@ const router = createRouter({
             component: Dashboard,
             meta: { requiresAuth: true },
         },
+        {
+            path: '/human_check',
+            name: 'humancheck',
+            component: HumanCheck,
+            meta: { requiresAuth: true }
+        },
         { path: '/:pathMatch(.*)*', component: NotFound }
     ]
 })
 
 router.beforeEach((to, from, next) => {
-    const store = useUserStore(); // Utiliza store, no useUserStore
+    const store = useUserStore();
     const toast = useToast();
 
     if (to.meta.requiresAuth) {
@@ -49,7 +57,6 @@ router.beforeEach((to, from, next) => {
         }
     } else {
         console.log("Not needed login")
-        // No se requiere autenticación para esta ruta
         next();
     }
 })

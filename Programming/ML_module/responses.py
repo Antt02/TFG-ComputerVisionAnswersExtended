@@ -98,22 +98,29 @@ def get_answer(rectangles):
         #cv2.imshow('Rect'+str(i), color_rect)
         #cv2.waitKey(0)#
 
-def count_pixels(answer, options):
-    #cv2.imshow("Answer", answer)
-    #cv2.waitKey(0)
+def count_pixels(answer, options, image_index, folder_name):
+    if options == 1:
+        folder_path = os.path.join("human_check", folder_name)
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)  # Crear la carpeta si no existe
+        filename = f"answer_{image_index}_{folder_name}.png"
+        filepath = os.path.join(folder_path, filename)
+        cv2.imwrite(filepath, answer)
+        print("Image saved as:", filepath)
+    
     parts = utlis.separe_answers(answer, options)
     
     answer_pixels = []
     for part in parts:
         white_pixels = utlis.max_pixels(part)
-        print("white pixels: ", white_pixels)
+        #print("white pixels: ", white_pixels)
         answer_pixels.append(white_pixels)
 
     max_pixels = max(answer_pixels)
     second_max_pixels = sorted(answer_pixels, reverse=True)[1] if len(answer_pixels) > 1 else 0
 
     if second_max_pixels > 0 and (max_pixels - second_max_pixels) / max_pixels < 0.25:
-        print("Difference between first and second answer less than 25%, returning 0")
+        #print("Difference between first and second answer less than 25%, returning 0")
         return 0
     
     print ("ANSWER: " + str(answer_pixels.index(max(answer_pixels)) + 1))
@@ -122,6 +129,7 @@ def count_pixels(answer, options):
 
 if __name__ == "__main__":
     folder_path = sys.argv[1]
+    username = sys.argv[2]
     
     image_files = os.listdir(folder_path)
 
@@ -144,4 +152,4 @@ if __name__ == "__main__":
         for i, answer in enumerate(answers):
             print("Analyzing image:", image_file)
             print("Seeing Question:", i+2)
-            answers = count_pixels(answer, possible_answers[i])
+            answers = count_pixels(answer, possible_answers[i], i, username)

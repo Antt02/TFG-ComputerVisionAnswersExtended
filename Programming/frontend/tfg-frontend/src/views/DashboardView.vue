@@ -18,93 +18,102 @@
       </template>
     </Toolbar>
 
-    <div class="form-container">
-      <!-- Número de expediente y acción formativa -->
-      <div class="form-row">
-        <div class="form-group">
-          <div class="p-float-label">
-            <InputText id="expedient_number" v-model="exp_number" type="integer" />
-            <label for="expedient_number">Número d'expedient</label>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="p-float-label">
-            <AutoComplete v-model="accio_formativa" inputId="accio_formativa" :suggestions="suggestions" @complete="accions_formatives_search" />
-            <label for="accio_formativa">Acció Formativa</label>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Número de grupo y modalidad -->
-    <div class="form-row">
-      <!-- Número de grupo -->
-      <div class="form-group">
-        <div class="p-float-label">
-          <InputText id="group_number" v-model="group_number" type="integer" />
-          <label for="group_number">Número de Grup</label>
-        </div>
-      </div>
-      <!-- Modalidad -->
-      <div class="form-group">
-        <div class="p-float-label">
-          <SelectButton v-model="v_modality" :options="modality_options" aria-labelledby="Modalitat" />
-        </div>
+    <div>
+      <div v-if="loading" class="loading-spinner-container">
+      <div class="card flex justify-content-center align-items-center">
+        <ProgressSpinner />
       </div>
     </div>
-
-      <!-- Calendario de inicio y fin -->
+    <div v-else>
+      <div class="form-container">
+        <!-- Número de expediente y acción formativa -->
+        <div class="form-row">
+          <div class="form-group">
+            <div class="p-float-label">
+              <InputText id="expedient_number" v-model="exp_number" type="integer" />
+              <label for="expedient_number">Número d'expedient</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="p-float-label">
+              <AutoComplete v-model="accio_formativa" inputId="accio_formativa" :suggestions="suggestions" @complete="accions_formatives_search" />
+              <label for="accio_formativa">Acció Formativa</label>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Número de grupo y modalidad -->
       <div class="form-row">
+        <!-- Número de grupo -->
         <div class="form-group">
           <div class="p-float-label">
-            <Calendar v-model="start_date" dateFormat="dd/mm/yy" />
-            <label for="start_date">Data d'Inici</label>
+            <InputText id="group_number" v-model="group_number" type="integer" />
+            <label for="group_number">Número de Grup</label>
           </div>
         </div>
+        <!-- Modalidad -->
         <div class="form-group">
           <div class="p-float-label">
-            <Calendar v-model="end_date" dateFormat="dd/mm/yy" />
-            <label for="end_date">Data Finalització</label>
+            <SelectButton v-model="v_modality" :options="modality_options" aria-labelledby="Modalitat" />
           </div>
         </div>
       </div>
 
-      <!-- Uploads de la primera y última página -->
-      <div class="form-row">
-        <div class="form-group">
-          <div class="card upload-card">
-            <Toast />
-            <FileUpload name="files" url="http://127.0.0.1:8081/uploadfirstpage" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000000" @before-send="beforeSend">
-              <template #empty>
-                <p>Primera Pàgina</p>
-              </template>
-            </FileUpload>
+        <!-- Calendario de inicio y fin -->
+        <div class="form-row">
+          <div class="form-group">
+            <div class="p-float-label">
+              <Calendar v-model="start_date" dateFormat="dd/mm/yy" />
+              <label for="start_date">Data d'Inici</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="p-float-label">
+              <Calendar v-model="end_date" dateFormat="dd/mm/yy" />
+              <label for="end_date">Data Finalització</label>
+            </div>
           </div>
         </div>
 
-        <div class="upload-separator"></div> <!-- Separador -->
+        <!-- Uploads de la primera y última página -->
+        <div class="form-row">
+          <div class="form-group">
+            <div class="card upload-card">
+              <Toast />
+              <FileUpload name="files" url="http://127.0.0.1:8081/uploadfirstpage" @upload="firstPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000000" @before-send="beforeSend">
+                <template #empty>
+                  <p>Primera Pàgina</p>
+                </template>
+              </FileUpload>
+            </div>
+          </div>
 
-        <div class="form-group">
-          <div class="card upload-card">
-            <Toast />
-            <FileUpload name="demo[]" url="/api/upload" @upload="secondPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
-              <template #empty>
-                <p>Segona Pàgina</p>
-              </template>
-            </FileUpload>
+          <div class="upload-separator"></div> <!-- Separador -->
+
+          <div class="form-group">
+            <div class="card upload-card">
+              <Toast />
+              <FileUpload name="demo[]" url="/api/upload" @upload="secondPageUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
+                <template #empty>
+                  <p>Segona Pàgina</p>
+                </template>
+              </FileUpload>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="submit-button-container">
-        <Button label="Submit" icon="pi pi-check" iconPos="right" class="w-100" @click="submitForm"/>
-      </div>
+        <div class="submit-button-container">
+          <Button label="Submit" icon="pi pi-check" iconPos="right" class="w-100" @click="submitForm"/>
+        </div>
 
+      </div>
     </div>
   </div>
+</div>
 </template>
 
 <script setup>
-import { onMounted, ref, computed} from "vue";
+import { onMounted, ref} from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { useUserStore } from '../stores/UserStore';
@@ -121,6 +130,8 @@ const start_date = ref();
 const end_date = ref();
 const integer = ref();
 const denomination = ref("");
+
+const loading = ref(false);
 
 const accions_formatives = ref([]);
 const suggestions = ref([]);
@@ -182,6 +193,7 @@ const handleLogout = () => {
 };
 
 const submitForm = () => {
+  loading.value = true;
     fetch('http://127.0.0.1:8081/process', {
       method: 'POST',
       headers: {
@@ -203,9 +215,12 @@ const submitForm = () => {
       } else {
         console.error('Error al realizar la solicitud:', response.statusText);
       }
+      loading.value = false
+      router.push('/human_check');
     })
     .catch(error => {
       console.error('Error al realizar la solicitud:', error);
+      loading.value = false
     });
   }
 </script>
@@ -283,5 +298,18 @@ const submitForm = () => {
   width: 100%;
   padding: 20px;
   text-align: right;
+}
+
+.loading-spinner-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.7); /* Fondo semitransparente para resaltar el spinner */
+  z-index: 9999; /* Asegúrate de que esté por encima de otros elementos */
 }
 </style>

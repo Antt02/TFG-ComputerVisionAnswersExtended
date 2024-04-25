@@ -2,8 +2,6 @@ import fastapi
 import time
 import os
 import asyncio
-import subprocess
-import uuid
 import shutil
 import mysql.connector
 import bcrypt
@@ -11,7 +9,7 @@ import uvicorn
 import json
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 class User(BaseModel):
     username: str
@@ -21,7 +19,7 @@ class User(BaseModel):
 def connect_db():
     global connection
     try:
-        time.sleep(50) # Wait for db to start
+        time.sleep(40) # Wait for db to start
         connection = mysql.connector.connect(
             host="mysql",
             user="user",
@@ -132,6 +130,9 @@ async def uploadfirstpage(files: List[fastapi.UploadFile], username: str = fasta
 
 @app.post("/process")
 async def process(request: fastapi.Request, username: str = fastapi.Header(None)):
+
+    print("Directorio actual:", os.getcwd())
+
     data = await request.json()
 
     exp_number = data.get("exp_number")
@@ -147,7 +148,7 @@ async def process(request: fastapi.Request, username: str = fastapi.Header(None)
     try:
         os.chdir("ml_module")
         process = await asyncio.create_subprocess_exec(
-            'python', 'responses.py', str("../files/" + username + "/first_page"),
+            'python', 'responses.py', str("../files/" + username + "/first_page"), username,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
@@ -159,8 +160,30 @@ async def process(request: fastapi.Request, username: str = fastapi.Header(None)
     except Exception as e:
         print("Error al ejecutar el comando: ", e)
 
-    print("Processing " + str(username))
     return "Processing " + str(username)
+
+
+@app.get("/humancheckimages/{username}")
+async def humancheckimages(username: str, image_index: int):
+    print("Directorio actual:", os.getcwd())
+    folder_path = f"../ml_module/human_check/{username}"
+
+    images_data = []
+
+    if os.path.exists(folder_path) and os.path.isdir(folder_path):
+        all_files = os.listdir(folder_path)
+
+        for file in all_files:
+            if file.lower().endswith(".png"):
+                image_path = os.path.join(folder_path, file)
+                with open(image_path, "rb") as image_file:
+                    image_data = image_file.read()
+                images_data.append(image_data)
+
+    if 0 <= image_index < len(images_data):
+        return fastapi.Response(content=images_data[image_index], media_type="image/png")
+    else:
+        raise fastapi.HTTPException(status_code=404, detail="Item not found")
     
 
 if __name__ == "__main__":

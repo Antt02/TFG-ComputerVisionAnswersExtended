@@ -19,6 +19,8 @@ import FileUpload from 'primevue/fileupload';
 import Dropdown from 'primevue/dropdown';
 import Calendar from 'primevue/calendar';
 import SelectButton from 'primevue/selectbutton';
+import ProgressSpinner from 'primevue/progressspinner';
+import Image from 'primevue/image';
 
 const app = createApp(App);
 
@@ -37,5 +39,7 @@ app.component('Dialog', Dialog);
 app.component('FileUpload', FileUpload);
 app.component('Calendar', Calendar);
 app.component('SelectButton', SelectButton);
+app.component('ProgressSpinner', ProgressSpinner);
+app.component('Image', Image);
 
 app.mount('#app')
