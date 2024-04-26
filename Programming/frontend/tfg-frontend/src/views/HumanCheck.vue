@@ -1,8 +1,27 @@
 <template>
-  <div>
-    <Button label="Imatge Següent" icon="pi pi-arrow-right" iconPos="right" @click="showNextImage" :disabled="buttonDisabled"/>
-    <img :src="currentImageSrc" alt="Imagen" width="250" />
+<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh;">
+  <template v-if= !moreImages>
+    <img :src="currentImageSrc" alt="Imagen" width="250" style="margin-bottom: 30px;" />
+  </template>
+  <template v-else>
+    <div style="color: gray; margin-bottom: 30px;" >No queden més imatges per analitzar</div>
+  </template>
+  <div class="form-container">
+    <div style="margin-bottom: 30px;">
+      <FloatLabel>
+        <InputText id="primeraResposta" v-model="primeraResposta" :disabled = "moreImages"/>
+        <label for="primeraResposta">Primera Resposta</label>
+      </FloatLabel>
+    </div>
+    <div>
+      <FloatLabel>
+        <InputText id="segonaResposta" v-model="segonaResposta" :disabled = "moreImages"/>
+        <label for="segonaResposta">Segona Resposta</label>
+      </FloatLabel>
+    </div>
   </div>
+  <Button label="Imatge Següent" icon="pi pi-arrow-right" iconPos="right" @click="showNextImage" style="margin-top: 30px" :disabled = "moreImages" />
+</div>
 </template>
 
 <script>
@@ -13,7 +32,9 @@ export default {
     return {
       images: [],
       currentImageIndex: 0,
-      buttonDisabled: false // Añade una propiedad para controlar el estado del botón
+      primeraResposta: "",
+      segonaResposta: "",
+      moreImages: false
     };
   },
   created() {
@@ -26,12 +47,12 @@ export default {
         const username = store.getUser.username;
         const response = await fetch(`http://127.0.0.1:8081/humancheckimages/${username}?image_index=${this.currentImageIndex}`);
         
-        if (response.ok) { // Verifica si la respuesta fue exitosa
+        if (response.ok) { 
           const imageData = await response.blob();
           this.images.push(URL.createObjectURL(imageData));
-          this.buttonDisabled = false; // Restablece el estado del botón si la respuesta fue exitosa
-        } else if (response.status === 404) { // Maneja el error 404
-          this.buttonDisabled = true; // Deshabilita el botón si el índice no es correcto
+          this.moreImages = false; 
+        } else if (response.status === 404) { 
+          this.moreImages = true;
         } else {
           console.error('Error al obtener las imágenes:', response.statusText);
         }
@@ -40,7 +61,11 @@ export default {
       }
     },
     showNextImage() {
-      this.currentImageIndex = (this.currentImageIndex + 1);
+      console.log("Primera respuesta:", this.primeraResposta);
+      console.log("Segona resposta:", this.segonaResposta);
+      this.primeraResposta = ""
+      this.segonaResposta = ""
+      this.currentImageIndex++;
       this.fetchImages();
     }
   },

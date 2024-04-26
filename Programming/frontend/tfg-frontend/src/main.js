@@ -21,6 +21,7 @@ import Calendar from 'primevue/calendar';
 import SelectButton from 'primevue/selectbutton';
 import ProgressSpinner from 'primevue/progressspinner';
 import Image from 'primevue/image';
+import FloatLabel from 'primevue/floatlabel';
 
 const app = createApp(App);
 
@@ -41,5 +42,6 @@ app.component('Calendar', Calendar);
 app.component('SelectButton', SelectButton);
 app.component('ProgressSpinner', ProgressSpinner);
 app.component('Image', Image);
+app.component('FloatLabel', FloatLabel);
 
 app.mount('#app')
