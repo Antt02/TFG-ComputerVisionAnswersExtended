@@ -178,10 +178,12 @@ async def humancheckimages(username: str, image_index: int):
                 image_path = os.path.join(folder_path, file)
                 with open(image_path, "rb") as image_file:
                     image_data = image_file.read()
-                images_data.append(image_data)
+                images_data.append((file, image_data))  # Añadir nombre de la imagen junto con sus datos
 
     if 0 <= image_index < len(images_data):
-        return fastapi.Response(content=images_data[image_index], media_type="image/png")
+        image_name, image_data = images_data[image_index]
+        headers = {"Content-Disposition": f"attachment; filename={image_name}"}  # Establecer nombre de archivo en la respuesta
+        return fastapi.Response(content=image_data, media_type="image/png", headers=headers)
     else:
         raise fastapi.HTTPException(status_code=404, detail="Item not found")
     
