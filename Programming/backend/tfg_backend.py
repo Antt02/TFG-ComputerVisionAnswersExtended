@@ -182,7 +182,7 @@ async def humancheckimages(username: str, image_index: int):
 
     if 0 <= image_index < len(images_data):
         image_name, image_data = images_data[image_index]
-        headers = {"Content-Disposition": f"attachment; filename={image_name}"}  # Establecer nombre de archivo en la respuesta
+        headers = {"file-name": f"{image_name}"}  # Establecer nombre de archivo en la respuesta
         return fastapi.Response(content=image_data, media_type="image/png", headers=headers)
     else:
         raise fastapi.HTTPException(status_code=404, detail="Item not found")
