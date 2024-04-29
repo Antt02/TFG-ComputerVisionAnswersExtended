@@ -25,7 +25,8 @@
   </div>
   </template>
   
-  <script>
+<script>  
+  import axios from 'axios';
   import { useUserStore } from '../stores/UserStore';
   
   export default {
@@ -35,6 +36,7 @@
         currentImageIndex: 0,
         primeraResposta: "",
         segonaResposta: "",
+        imageName: "",
         moreImages: false
       };
     },
@@ -46,24 +48,27 @@
         try {
           const store = useUserStore();
           const username = store.getUser.username;
-          const response = await fetch(`http://127.0.0.1:8081/humancheckimages/${username}?image_index=${this.currentImageIndex}`);
-          
-          if (response.ok) { 
-            const imageData = await response.blob();
-            this.images.push(URL.createObjectURL(imageData));
+          const response = await axios.get(`http://127.0.0.1:8081/humancheckimages/${username}?image_index=${this.currentImageIndex}`);
+          if (response.status == 200) {
+            const imageData = new Uint8Array(response.data.image);
+            const blob = new Blob([imageData], {type:"image/png"});
+            this.images.push(URL.createObjectURL(blob));
+            this.imageName = response.data.imagename
             this.moreImages = false; 
-          } else if (response.status === 404) { 
+          } else if (response.status == 404) { 
             this.moreImages = true;
           } else {
             console.error('Error al obtener las imágenes:', response.statusText);
           }
         } catch (error) {
-          console.error('Error al obtener las imágenes:', error);
+          this.moreImages = true;
         }
       },
       showNextImage() {
+        console.log("ImageName:", this.imageName);
         console.log("Primera respuesta:", this.primeraResposta);
         console.log("Segona resposta:", this.segonaResposta);
+        this.imageName = ""
         this.primeraResposta = ""
         this.segonaResposta = ""
         this.currentImageIndex++;
