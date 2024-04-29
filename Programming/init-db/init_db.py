@@ -47,6 +47,7 @@ def create_tables_if_not_exist():
 
 if __name__ == "__main__":
     print("Waiting to database to be ready...", flush=True)
-    time.sleep(45)
+    time.sleep(50)
     print("Startingt init-db.py ...", flush=True)
     create_tables_if_not_exist()
+    print("Finished init-db.py ...", flush=True)

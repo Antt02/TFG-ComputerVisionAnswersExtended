@@ -4,6 +4,7 @@ import App from './App.vue'
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice'
 import router from './router';
+import axios from 'axios';
 
 import 'primevue/resources/themes/lara-light-green/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -43,5 +44,7 @@ app.component('SelectButton', SelectButton);
 app.component('ProgressSpinner', ProgressSpinner);
 app.component('Image', Image);
 app.component('FloatLabel', FloatLabel);
+
+app.config.globalProperties.$http = axios;
 
 app.mount('#app')

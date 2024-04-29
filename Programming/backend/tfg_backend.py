@@ -7,6 +7,7 @@ import mysql.connector
 import bcrypt
 import uvicorn
 import json
+import numpy as np
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
@@ -182,8 +183,9 @@ async def humancheckimages(username: str, image_index: int):
 
     if 0 <= image_index < len(images_data):
         image_name, image_data = images_data[image_index]
-        headers = {"Content-Disposition": f"attachment; filename={image_name}"}  # Establecer nombre de archivo en la respuesta
-        return fastapi.Response(content=image_data, media_type="image/png", headers=headers)
+        image_array = np.frombuffer(image_data, dtype=np.uint8).tolist()  # Convertir los datos de la imagen a una lista de enteros Uint8
+        response_data = {"image": image_array, "imagename": image_name}
+        return response_data
     else:
         raise fastapi.HTTPException(status_code=404, detail="Item not found")
     
