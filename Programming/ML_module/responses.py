@@ -3,6 +3,9 @@ import sys
 import cv2
 import utlis
 import numpy as np
+import uuid
+import json
+import requests
 
 
 width = 800
@@ -98,15 +101,17 @@ def get_answer(rectangles):
         #cv2.imshow('Rect'+str(i), color_rect)
         #cv2.waitKey(0)#
 
-def count_pixels(answer, options, image_index, folder_name, file_number):
+def count_pixels(answer, options, image_index, folder_name, file_number, uuid):
+    # If is a handwritten image
     if options == 1:
         folder_path = os.path.join("human_check", folder_name)
         if not os.path.exists(folder_path):
             os.makedirs(folder_path)  # Crear la carpeta si no existe
-        filename = f"file_{file_number}_answer_{image_index}_{folder_name}.png"
+        filename = f"questid_{uuid}_file_{file_number}_answer_{image_index}_{folder_name}.png"
         filepath = os.path.join(folder_path, filename)
         cv2.imwrite(filepath, answer)
-        print("Image saved as:", filepath)
+        return 0
+        #print("Image saved as:", filepath)
     
     parts = utlis.separe_answers(answer, options)
     
@@ -123,17 +128,37 @@ def count_pixels(answer, options, image_index, folder_name, file_number):
         #print("Difference between first and second answer less than 25%, returning 0")
         return 0
     
-    print ("ANSWER: " + str(answer_pixels.index(max(answer_pixels)) + 1))
+    #print ("ANSWER: " + str(answer_pixels.index(max(answer_pixels)) + 1))
     return answer_pixels.index(max(answer_pixels)) + 1
 
+def send_json(json_answers):
+    response = requests.post("http://127.0.0.1:8081/savecv", json=json_answers)
 
 if __name__ == "__main__":
     folder_path = sys.argv[1]
     username = sys.argv[2]
+    exp_number = sys.argv[3]
+    accio_formativa = sys.argv[4]
+    group_number = sys.argv[5]
+    v_modality = sys.argv[6]
+    start_date = sys.argv[7]
+    end_date = sys.argv[8]
     
     image_files = os.listdir(folder_path)
 
     for file_number, image_file in enumerate(image_files):
+        cv_answers = {}
+        quest_uuid = uuid.uuid4()
+
+        cv_answers["uuid"] = str(quest_uuid)
+        cv_answers["username"] = str(username)
+        cv_answers["exp_number"] = str(exp_number)
+        cv_answers["accio_formativa"] = str(accio_formativa)
+        cv_answers["group_number"] = str(group_number)
+        cv_answers["v_modality"] = str(v_modality)
+        cv_answers["start_date"] = str(start_date)
+        cv_answers["end_date"] = str(end_date)
+
         # Construct the full path to the image
         image_path = os.path.join(folder_path, image_file)
         
@@ -150,6 +175,10 @@ if __name__ == "__main__":
         
         # Iterate over each question and answer in the current image
         for i, answer in enumerate(answers):
-            print("Analyzing image:", image_file)
-            print("Seeing Question:", i+2)
-            answers = count_pixels(answer, possible_answers[i], i, username, file_number)
+            #print("Analyzing image:", image_file)
+            #print("Seeing Question:", i+2)
+            answers = count_pixels(answer, possible_answers[i], i, username, file_number, quest_uuid)
+            print(f"---- Question{i} Answer {answers}-------")
+            cv_answers[i] = answers
+
+        send_json(cv_answers)

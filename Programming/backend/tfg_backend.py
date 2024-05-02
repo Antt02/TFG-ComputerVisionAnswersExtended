@@ -149,7 +149,7 @@ async def process(request: fastapi.Request, username: str = fastapi.Header(None)
     try:
         os.chdir("ml_module")
         process = await asyncio.create_subprocess_exec(
-            'python', 'responses.py', str("../files/" + username + "/first_page"), username,
+            'python', 'responses.py', str("../files/" + username + "/first_page"), username, exp_number, accio_formativa, group_number, v_modality, start_date, end_date,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
@@ -189,6 +189,41 @@ async def humancheckimages(username: str, image_index: int):
     else:
         raise fastapi.HTTPException(status_code=404, detail="Item not found")
     
+@app.post("/savecv")
+async def savecv(request: fastapi.Request):
+    data = await request.json()
+
+    uuid = str(data.get("uuid"))
+    username = str(data.get("username"))
+    exp_number = str(data.get("exp_number"))
+    accio_formativa = int(data.get("accio_formativa"))
+    group_number = int(data.get("group_number"))
+    v_modality = str(data.get("v_modality"))
+    start_date = str(data.get("start_date"))
+    end_date = str(data.get("end_date"))
+    q1 = 0 #Age not verified
+    q2 = int(data.get("0"))
+    q3 = int(data.get("1"))
+    q4 = int(data.get("2"))
+    q5_1 = int(data.get("3"))
+    q5_2 = int(data.get("4"))
+    q6 = int(data.get("5"))
+    q7 = int(data.get("6"))
+    q8_1 = int(data.get("7"))
+    q8_2 = int(data.get("8"))
+    q9 = int(data.get("9"))
+
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO ANSWERS (UUID, processed_by, num_expedient, accio_formativa, grup, modalitat, data_inici, data_final, q1, q2, q3, q4, q5_1, q5_2, q6, q7, q8_1, q8_2, q9) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+               (uuid, username, exp_number, accio_formativa, group_number, v_modality, start_date, end_date, q1, q2, q3, q4, q5_1, q5_2, q6, q7, q8_1, q8_2, q9))
+        connection.commit()
+        return {"message": "Datos guardados correctamente en la base de datos"}
+    except mysql.connector.Error as err:
+        print(err)
+        raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
+    finally:
+        cursor.close()
 
 if __name__ == "__main__":
     connect_db()
