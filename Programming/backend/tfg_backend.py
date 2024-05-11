@@ -225,6 +225,30 @@ async def savecv(request: fastapi.Request):
     finally:
         cursor.close()
 
+@app.post("/updateanswer/{response_uuid}/{question_number}")
+async def updateanswer(request: fastapi.Request, response_uuid: str, question_number:int):
+    data = await request.json()
+    print("UUID:", response_uuid)
+    response1 = data.get("resposta1")
+    response2 = data.get("resposta2")
+
+    question_number = str(int(question_number) + 2) + "_1" if question_number == 3 else str(int(question_number) +1) + "_2"
+    question_number = "q" + question_number
+    print("Question Number",question_number)
+
+    concatenated_response = str(response1) + str(response2)
+    print("Concatenated Response", concatenated_response)
+    try:
+        cursor = connection.cursor()
+        cursor.execute(f"UPDATE ANSWERS SET {question_number} = {concatenated_response} WHERE UUID = '{response_uuid}'")
+        connection.commit()
+        return {"message": "Datos actualizados correctamente en la base de datos"}
+    except mysql.connector.Error as err:
+        raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
+    cursor = connection.cursor()
+
+    return 0
+
 if __name__ == "__main__":
     connect_db()
     uvicorn.run(app, host="0.0.0.0", port=8081)
