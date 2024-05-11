@@ -68,6 +68,25 @@
         console.log("ImageName:", this.imageName);
         console.log("Primera respuesta:", this.primeraResposta);
         console.log("Segona resposta:", this.segonaResposta);
+
+        const regexPattern = /questid_(.*?)_file_(.*?)_answer_(.*?)_(.*?)\.png/;
+
+        const matches = this.imageName.match(regexPattern);
+        if (matches) {
+          const questId = matches[1];
+          const fileId = matches[2];
+          const answer = matches[3];
+          const user = matches[4];
+
+          // Hacer lo que necesites con los valores extraídos
+          console.log("Quest ID REGEX:", questId);
+          console.log("File ID REGEX:", fileId);
+          console.log("Answer REGEX:", answer);
+          console.log("User REGEX:", user);
+        } else {
+         console.log("No se encontraron coincidencias");
+        }
+        //Remove image from user
         this.imageName = ""
         this.primeraResposta = ""
         this.segonaResposta = ""
