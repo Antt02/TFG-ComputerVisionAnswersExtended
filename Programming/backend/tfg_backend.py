@@ -147,9 +147,8 @@ async def process(request: fastapi.Request, username: str = fastapi.Header(None)
         raise fastapi.exceptions.HTTPException(status_code=400, detail="Username header is missing")
 
     try:
-        os.chdir("ml_module")
         process = await asyncio.create_subprocess_exec(
-            'python', 'responses.py', str("../files/" + username + "/first_page"), username, exp_number, accio_formativa, group_number, v_modality, start_date, end_date,
+            'python', 'ml_module/responses.py', str("files/" + username + "/first_page"), username, exp_number, accio_formativa, group_number, v_modality, start_date, end_date,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
@@ -166,8 +165,9 @@ async def process(request: fastapi.Request, username: str = fastapi.Header(None)
 
 @app.get("/humancheckimages/{username}")
 async def humancheckimages(username: str, image_index: int):
-    print("Directorio actual:", os.getcwd())
-    folder_path = f"../ml_module/human_check/{username}"
+    print("Directorio actual HUMANCHECKIMAGES:", os.getcwd())
+    
+    folder_path = f"human_check/{username}"
 
     images_data = []
 
@@ -231,6 +231,9 @@ async def updateanswer(request: fastapi.Request, response_uuid: str, question_nu
     print("UUID:", response_uuid)
     response1 = data.get("resposta1")
     response2 = data.get("resposta2")
+    
+    response1 = 0 if not response1 else int(response1)
+    response2 = 0 if not response2 else int(response2)
 
     question_number = str(int(question_number) + 2) + "_1" if question_number == 3 else str(int(question_number) +1) + "_2"
     question_number = "q" + question_number
@@ -245,9 +248,16 @@ async def updateanswer(request: fastapi.Request, response_uuid: str, question_nu
         return {"message": "Datos actualizados correctamente en la base de datos"}
     except mysql.connector.Error as err:
         raise fastapi.HTTPException(status_code=500, detail=f"Error interno del servidor: {err}")
-    cursor = connection.cursor()
 
-    return 0
+
+@app.delete("/deleteimage/{username}/{image_name}") # TODO: REVISAR GENERADO POR COPILOT
+async def deleteimage(image_name: str, username: str):
+    image_path = f"human_check/{username}/{image_name}"
+    if os.path.exists(image_path):
+        os.remove(image_path)
+        return {"message": "Imagen eliminada correctamente"}
+    else:
+        raise fastapi.HTTPException(status_code=404, detail="Imagen no encontrada")
 
 if __name__ == "__main__":
     connect_db()

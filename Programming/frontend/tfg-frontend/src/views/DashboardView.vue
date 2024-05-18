@@ -25,6 +25,13 @@
       </div>
     </div>
     <div v-else>
+
+      <div class="header">
+        <h1 class="title">Capçalera del Qüestionari</h1>
+        <p class="subtitle">Introdueix manualment les dades i puja les imatges.</p>
+        <p class="subtitle"> *IMPORTANT* les pàgines han d'anar una a una i separades per primera i segona pàgina</p>
+      </div>
+
       <div class="form-container">
         <!-- Número de expediente y acción formativa -->
         <div class="form-row">
@@ -229,8 +236,7 @@ const submitForm = () => {
 .full-page {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  padding: 20px;
+  padding: 10px;
 }
 
 .toolbar {
@@ -311,5 +317,20 @@ const submitForm = () => {
   align-items: center;
   background-color: rgba(255, 255, 255, 0.7); /* Fondo semitransparente para resaltar el spinner */
   z-index: 9999; /* Asegúrate de que esté por encima de otros elementos */
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 45px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: gray;
 }
 </style>
