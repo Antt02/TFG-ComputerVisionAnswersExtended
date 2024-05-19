@@ -23,6 +23,8 @@ import SelectButton from 'primevue/selectbutton';
 import ProgressSpinner from 'primevue/progressspinner';
 import Image from 'primevue/image';
 import FloatLabel from 'primevue/floatlabel';
+import ConfirmDialog from 'primevue/confirmdialog';
+import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp(App);
 
@@ -30,6 +32,7 @@ app.use(router)
 app.use(createPinia())
 app.use(PrimeVue);
 app.use(ToastService);
+app.use(ConfirmationService);
 
 app.component('Dropdown', Dropdown);
 app.component('Button', Button);
@@ -44,6 +47,7 @@ app.component('SelectButton', SelectButton);
 app.component('ProgressSpinner', ProgressSpinner);
 app.component('Image', Image);
 app.component('FloatLabel', FloatLabel);
+app.component('ConfirmDialog', ConfirmDialog);
 
 app.config.globalProperties.$http = axios;
 

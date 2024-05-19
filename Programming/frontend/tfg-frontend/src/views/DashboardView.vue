@@ -50,21 +50,21 @@
         </div>
         
         <!-- Número de grupo y modalidad -->
-      <div class="form-row">
-        <!-- Número de grupo -->
-        <div class="form-group">
-          <div class="p-float-label">
-            <InputText id="group_number" v-model="group_number" type="integer" />
-            <label for="group_number">Número de Grup</label>
+        <div class="form-row">
+          <!-- Número de grupo -->
+          <div class="form-group">
+            <div class="p-float-label">
+              <InputText id="group_number" v-model="group_number" type="integer" />
+              <label for="group_number">Número de Grup</label>
+            </div>
+          </div>
+          <!-- Modalidad -->
+          <div class="form-group">
+            <div class="p-float-label">
+              <SelectButton v-model="v_modality" :options="modality_options" aria-labelledby="Modalitat" />
+            </div>
           </div>
         </div>
-        <!-- Modalidad -->
-        <div class="form-group">
-          <div class="p-float-label">
-            <SelectButton v-model="v_modality" :options="modality_options" aria-labelledby="Modalitat" />
-          </div>
-        </div>
-      </div>
 
         <!-- Calendario de inicio y fin -->
         <div class="form-row">
@@ -110,7 +110,18 @@
         </div>
 
         <div class="submit-button-container">
-          <Button label="Submit" icon="pi pi-check" iconPos="right" class="w-100" @click="submitForm"/>
+          <ConfirmDialog group="templating">
+            <template #message="slotProps">
+              <div class="flex flex-column align-items-center w-full gap-3 border-bottom-1 surface-border">
+                <i :class="slotProps.message.icon" class="text-6xl text-primary-500"></i>
+                <p>{{ slotProps.message.message }}</p>
+              </div>
+            </template>
+          </ConfirmDialog>
+          <div class="card flex justify-content-center">
+            <Button @click="showTemplate" label="Enviar"></Button>
+          </div>
+          <Toast />
         </div>
 
       </div>
@@ -124,8 +135,10 @@ import { onMounted, ref} from "vue";
 import { useToast } from "primevue/usetoast";
 import { useRouter } from "vue-router";
 import { useUserStore } from '../stores/UserStore';
+import { useConfirm } from "primevue/useconfirm";
 
 const toast = useToast();
+const confirm = useConfirm();
 const router = useRouter();
 const store = useUserStore();
 
@@ -135,13 +148,12 @@ const group_number = ref("");
 
 const start_date = ref();
 const end_date = ref();
-const integer = ref();
-const denomination = ref("");
 
 const loading = ref(false);
 
 const accions_formatives = ref([]);
 const suggestions = ref([]);
+const files = ref([]);
 
 let tupleArray = [];
 
@@ -179,6 +191,9 @@ const beforeSend = (request) => {
 }
 
 const firstPageUpload = (event) => {
+
+  files.value = event.files;
+
   const response = event.xhr.responseText;
   const responseData = JSON.parse(response);
 
@@ -200,6 +215,17 @@ const handleLogout = () => {
 };
 
 const submitForm = () => {
+  
+  if (!exp_number.value || !accio_formativa.value || !group_number.value || !v_modality.value || !start_date.value || !end_date.value) {
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Tots els camps són obligatoris', life: 3000 });
+    return;
+  }
+
+  if (files.value.length < 1) {
+    toast.add({ severity: 'error', summary: 'Error', detail: "No s'ha penjat cap imatge", life: 3000 });
+    return;
+  }
+
   loading.value = true;
     fetch('http://127.0.0.1:8081/process', {
       method: 'POST',
@@ -229,7 +255,29 @@ const submitForm = () => {
       console.error('Error al realizar la solicitud:', error);
       loading.value = false
     });
-  }
+}
+
+const showTemplate = () => {
+    confirm.require({
+        group: 'templating',
+        header: 'Confirmar Enviament Formulari',
+        // Pon este texto como message: "S'han penjat un total de {{files.length}} imatges. Vols continuar?"
+        message: `S'han penjat un total de ${files.value.length} imatges. Vols continuar?`,
+        icon: 'pi pi-exclamation-circle',
+        acceptIcon: 'pi pi-check',
+        rejectIcon: 'pi pi-times',
+        rejectClass: 'p-button-outlined p-button-sm',
+        acceptClass: 'p-button-sm',
+        rejectLabel: 'Cancel·lar',
+        acceptLabel: 'Acceptar',
+        accept: () => {
+            submitForm(); // Call submitForm on accept
+        },
+        reject: () => {
+            toast.add({ severity: 'error', summary: 'Cancel·lat', detail: "S'ha cancel·lat l'enviament", life: 3000 });
+        }
+    });
+};
 </script>
 
 <style scoped>

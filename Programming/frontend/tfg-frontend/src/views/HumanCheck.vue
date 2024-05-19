@@ -59,8 +59,6 @@ import axios from 'axios';
 import { useUserStore } from '../stores/UserStore';
 import { useRouter } from "vue-router";
 
-const router = useRouter();
-
 export default {
   data() {
     return {
@@ -140,7 +138,7 @@ export default {
     },
     finished(){
       const router = useRouter();
-      this.router.push('/dashboard');
+      router.push('/dashboard');
       console.log("user has finished")
     }
   },
