@@ -137,8 +137,7 @@ export default {
       this.fetchImages();
     },
     finished(){
-      const router = useRouter();
-      router.push('/dashboard');
+      this.$router.push('/dashboard');
       console.log("user has finished")
     }
   },
