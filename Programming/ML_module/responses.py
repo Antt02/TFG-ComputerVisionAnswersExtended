@@ -1,7 +1,7 @@
 import os
 import sys
 import cv2
-import utlis
+import utils
 import numpy as np
 import uuid
 import json
@@ -42,22 +42,22 @@ def get_contours(answers):
     contours, hierarchy = cv2.findContours(answers, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.drawContours(img_contours, contours, -1, (0,255,0), 3)
 
-    rectangles = utlis.rectContour(contours)
+    rectangles = utils.rectContour(contours)
     return rectangles
 
 def answers_corners(rectangles):
     rectangles_arr = []
     for rect in rectangles:
-        rectangles_arr.append(utlis.getCornerPoints(rect))
+        rectangles_arr.append(utils.getCornerPoints(rect))
 
-    rectangles_arr = utlis.divide_and_sort_rectangles(rectangles_arr)
+    rectangles_arr = utils.divide_and_sort_rectangles(rectangles_arr)
 
     return rectangles_arr
 
 def correct_rectangles(rectangles):
     corrected_rect = []
     for rect in rectangles:
-        rect = utlis.reshape(rect)
+        rect = utils.reshape(rect)
         pt1 = np.float32(rect)
         pt2 = np.float32(np.float32([[0,0],[400,0], [0,cropped_height],[400,cropped_height]]))
         matrix = cv2.getPerspectiveTransform(pt1, pt2)
@@ -69,7 +69,7 @@ def correct_rectangles(rectangles):
 
     image_array = ([original, img_gray, img_blur, img_canny],
                 [img_contours, img_contours2, np.zeros_like(answers), np.zeros_like(answers)])
-    img_stacked = utlis.stackImages(image_array, 0.5)
+    img_stacked = utils.stackImages(image_array, 0.5)
 
     #cv2.imshow("Stacked", img_stacked)
     #cv2.waitKey(0)
@@ -113,11 +113,11 @@ def count_pixels(answer, options, image_index, folder_name, file_number, uuid):
         return 0
         #print("Image saved as:", filepath)
     
-    parts = utlis.separe_answers(answer, options)
+    parts = utils.separe_answers(answer, options)
     
     answer_pixels = []
     for part in parts:
-        white_pixels = utlis.max_pixels(part)
+        white_pixels = utils.max_pixels(part)
         #print("white pixels: ", white_pixels)
         answer_pixels.append(white_pixels)
 
