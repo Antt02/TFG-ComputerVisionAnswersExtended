@@ -38,7 +38,8 @@ app.add_middleware(
     allow_origins=[
         "http://127.0.0.1:8080",
         "http://localhost:8080",
-        "http://0.0.0.0:8080"
+        "http://0.0.0.0:8080",
+        "http://172.18.0.1:8080"
         ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -50,8 +51,13 @@ def test():
     return {"message": "Servicio Funcionando"}
 
 @app.post("/register")
-def register(user: User):
-    if not user.username or not user.password or not user.email:
+async def register(request: fastapi.Request):
+    data = await request.json()
+
+    username = data.get("username")
+    password = data.get("password")
+    email = data.get("email")
+    if not username or not password or not email:
         raise fastapi.HTTPException(status_code=400, detail="Falta nombre de usuario, contraseña o correo electrónico en la solicitud")
 
     cursor = connection.cursor()

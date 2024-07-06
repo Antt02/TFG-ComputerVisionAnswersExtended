@@ -9,6 +9,9 @@ COPY package*.json ./
 # install project dependencies
 RUN npm install
 
+# for testing with no working register
+ENV NODE_ENV "development"
+
 # copy project files and folders to the current working directory (i.e. 'app' folder)
 COPY . .
 

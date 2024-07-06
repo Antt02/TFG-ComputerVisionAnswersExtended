@@ -13,27 +13,53 @@
       </template>
       <template #end>
         <div class="card flex justify-content-center">
-        <Button label="Login" icon="pi pi-user" @click="visible = true" />
-        <Dialog v-model:visible="visible" modal :pt="{ root: 'border-none', mask: { style: 'backdrop-filter: blur(2px)' } }">
-          <template #container="{ closeCallback }">
-            <div class="login-container">
-              <div class="login-title">Login</div>
-              <form @submit.prevent="handleLogin">
-                <div class="p-float-label">
-                  <InputText id="username" v-model="username" type="username"/>
-                  <label for="username">Username</label>
-                </div>
-                <div class="p-float-label">
-                  <InputText id="password" v-model="password" type="password"/>
-                  <label for="password">Password</label>
-                </div>
-                <div class="flex align-items-center gap-3">
-                  <Button label="Cancel" @click="closeCallback" text class="cancel-button" />
-                  <Button type="submit" label="Sign-In" text class="signin-button" />
-                </div>
-              </form>
-            </div>
-          </template>
+          <Button label="Login" icon="pi pi-user" @click="loginVisible = true" />
+            <Dialog v-model:visible="loginVisible" modal :pt="{ root: 'border-none', mask: { style: 'backdrop-filter: blur(2px)' } }">
+              <template #container="{ closeCallback }">
+                <div class="login-container">
+                  <div class="login-title">Login</div>
+                    <form @submit.prevent="handleLogin">
+                      <div class="p-float-label">
+                        <InputText id="username" v-model="username" type="username"/>
+                        <label for="username">Username</label>
+                      </div>
+                      <div class="p-float-label">
+                        <InputText id="password" v-model="password" type="password"/>
+                        <label for="password">Password</label>
+                      </div>
+                      <div class="flex align-items-center gap-3">
+                        <Button label="Cancel" @click="closeCallback" text class="cancel-button" />
+                        <Button type="submit" label="Sign-In" text class="signin-button" />
+                      </div>
+                    </form>
+                  </div>
+              </template>
+          </Dialog>
+        <Button label="Register" icon="pi pi-user" @click="registerVisible = true" />
+          <Dialog v-model:visible="registerVisible" modal :pt="{ root: 'border-none', mask: { style: 'backdrop-filter: blur(2px)' } }">
+            <template #container="{ closeCallback }">
+              <div class="register-container">
+                <div class="register-title">Register</div>
+                <form @submit.prevent="handleRegister">
+                  <div class="p-float-label">
+                    <InputText id="username" v-model="username" type="username"/>
+                    <label for="username">Username</label>
+                  </div>
+                  <div class="p-float-label">
+                    <InputText id="password" v-model="password" type="password"/>
+                    <label for="password">Password</label>
+                  </div>
+                  <div class="p-float-label">
+                    <InputText id="email" v-model="email" type="email"/>
+                    <label for="email">Email</label>
+                  </div>
+                  <div class="flex align-items-center gap-3">
+                    <Button label="Cancel" @click="closeCallback" text class="cancel-button" />
+                    <Button type="submit" label="Sign-Up" text class="signup-button" />
+                  </div>
+                </form>
+              </div>
+            </template>
           </Dialog>
         </div>
       </template>
@@ -63,7 +89,8 @@ import axios from 'axios'
 
 const router = useRouter();
 const store = useUserStore();
-const visible = ref(false);
+const loginVisible = ref(false);
+const registerVisible = ref(false);
 const username = ref('');
 const password = ref('');
 const toast = useToast();
@@ -81,6 +108,48 @@ const handleLogin = () => {
       store.login(username, email)
       console.log(store.getUser)
       router.push('/dashboard');
+    })
+    .catch(error => {
+      if (error.response) {
+        const statusCode = error.response.status;
+        switch (statusCode) {
+          case 400:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Introduce el usuario y la contraseña', life: 3000 });
+            break;
+          case 401:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Contraseña incorrecta', life: 3000 });
+            break;
+          case 404:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Usuario no encontrado', life: 3000 });
+            break;
+          default:
+            toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error inesperado', life: 3000 });
+        }
+      } else {
+        toast.add({ severity: 'error', summary: 'Login Error', detail: 'Error: ' + error.message, life: 3000 });
+      }
+    });
+  }else{ //For development
+    store.login("admin-dev", "admin-dev")
+    router.push('/dashboard');
+  }
+
+};
+
+// TODO: review and addapt propperly
+const handleRegister = () => {
+  if (process.env.NODE_ENV != "development"){
+      axios.post('http://127.0.0.1:8081/register', {
+      username: username.value,
+      password: password.value
+    })
+    .then(response => {
+      console.log(response.data);
+      const { username, email } = response.data;
+      console.log("---- STORE USER ---")
+      store.login(username, email)
+      console.log(store.getUser)
+      // router.push('/dashboard');
     })
     .catch(error => {
       if (error.response) {
@@ -169,7 +238,7 @@ h2 {
   vertical-align: top;
 }
 
-.login-container {
+.login-container, .register-container {
   background-color: #f8f8f8;
   border-radius: 12px;
   padding: 40px;
@@ -177,7 +246,7 @@ h2 {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.login-title {
+.login-title, .register-title {
   color: #000;
   font-size: 24px;
   margin-bottom: 40px;
@@ -187,7 +256,7 @@ h2 {
   margin-bottom: 30px;
 }
 
-.cancel-button, .signin-button {
+.cancel-button, .signin-button, .signup-button {
   border-radius: 8px;
   padding: 12px 24px;
   font-weight: 500;
@@ -200,7 +269,7 @@ h2 {
   color: #666;
 }
 
-.signin-button {
+.signin-button, .signup-button {
   background-color: #0070e0;
   border: 1px solid #0070e0;
   color: #fff;
@@ -211,7 +280,7 @@ h2 {
   background-color: #ccc;
 }
 
-.signin-button:hover {
+.signin-button:hover, .signup-button:hover {
   background-color: #005bb2;
 }
 </style>
