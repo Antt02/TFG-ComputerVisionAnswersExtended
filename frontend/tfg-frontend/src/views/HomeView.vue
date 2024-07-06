@@ -35,6 +35,7 @@
                   </div>
               </template>
           </Dialog>
+        <span style="display:inline-block; width: 10px;"></span>
         <Button label="Register" icon="pi pi-user" @click="registerVisible = true" />
           <Dialog v-model:visible="registerVisible" modal :pt="{ root: 'border-none', mask: { style: 'backdrop-filter: blur(2px)' } }">
             <template #container="{ closeCallback }">
