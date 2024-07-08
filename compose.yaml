@@ -23,8 +23,13 @@ services:
     ports:
       - "5173:5173" 
       - "8080:8080"
-    # volumes:
-      # - frontend-development:/app
+    volumes:
+      - ./frontend/tfg-frontend:/app
+      - /app/node_modules 
+    environment:
+      - NODE_ENV=development
+    # when prod -> npm run build (instead of dev)
+    command: sh -c "npm run dev & nodemon server.js"
   
   backend:
     build:
@@ -48,4 +53,3 @@ services:
 volumes:
   backend-files:
   ml-module-files:
-  # frontend-development:

@@ -9,7 +9,10 @@ COPY package*.json ./
 # install project dependencies
 RUN npm install
 
-# for testing with no working register
+# install nodemon for development
+RUN npm install -g nodemon
+
+# for testing (with no working register)
 ENV NODE_ENV "development"
 
 # copy project files and folders to the current working directory (i.e. 'app' folder)
@@ -19,7 +22,8 @@ COPY . .
 RUN npm run build
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 8080 5173
 
-# Run Express server
-CMD ["node", "server.js"]
+## Run Express server
+# Command to start both Vite and the backend server
+CMD ["sh", "-c", "npm run dev & nodemon server.js"]
